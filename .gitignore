@@ -1,3 +1,9 @@
+# The original DataSets
+DataSets/*
+
+# The Spyder Py workspace
+src/.spyderworkspace
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
