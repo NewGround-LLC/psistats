@@ -32,12 +32,20 @@ def buildFBLikesDataSet(users_csv, likes_csv, users_likes_csv):
     print '\n------------------------\nLikes:\n%s' % likes_df.describe()
     
     # create index sequences
-    ul_size = len(users_likes_df)
-    users_idx = [users_df.loc[users_df['userid'] == users_likes_df['userid'].iloc[i]].index[0] for i in range(ul_size)]
-    likes_idx = [likes_df.loc[likes_df['likeid'] == users_likes_df['likeid'].iloc[i]].index[0] for i in range(ul_size)]
+    ul_size = 100#len(users_likes_df)
+    print 'Start building users/likes indexes with size: %d' % ul_size
+    users_idx = np.zeros(ul_size)
+    likes_idx = np.zeros(ul_size)
+    for i in range(ul_size):
+        userid = users_likes_df['userid'][i]
+        likeid = users_likes_df['likeid'][i]
+        users_idx[i] = users_df.loc[users_df['userid'] == userid].index[0]
+        likes_idx[i] = likes_df.loc[likes_df['likeid'] == likeid].index[0]
     
-    print 'Building sparse matrix for users count: %d, likes count: %d' % (len(users_idx), len(likes_idx))    
-    
+    users_found = np.shape(users_idx)[0]
+    likes_found = np.shape(likes_idx)[0]
+    print 'Building sparse matrix for users count: %s, likes count: %s' % (users_found, likes_found) 
+
     # build sparse matrix
     matrix = dok_matrix((len(users_df), len(likes_df)), dtype=np.int16)
     for i in range(len(users_idx)):
@@ -46,7 +54,7 @@ def buildFBLikesDataSet(users_csv, likes_csv, users_likes_csv):
            
     # trimming data
     m_shape = matrix.shape
-    print '\nResulting matrix shape:%s' % m_shape       
+    print '\nResulting matrix shape: (%d, %d)' % (m_shape[0], m_shape[1])       
            
     return matrix, users_df, likes_df
    
