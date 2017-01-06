@@ -5,12 +5,12 @@ Created by Iaroslav Omelianenko
 """
 import argparse
 import sys
+import time 
 
 import pandas as pd
 import numpy as np
 from scipy.sparse import coo_matrix
 from scipy.sparse import dok_matrix
-
 
 def buildFBLikesDataSet(users_csv, likes_csv, users_likes_csv):
     """
@@ -31,25 +31,33 @@ def buildFBLikesDataSet(users_csv, likes_csv, users_likes_csv):
     print '\n------------------------\nUsers:\n%s' % users_df.describe()
     print '\n------------------------\nLikes:\n%s' % likes_df.describe()
     
-    # create index sequences
-    ul_size = 100#len(users_likes_df)
-    print 'Start building users/likes indexes with size: %d' % ul_size
-    users_idx = np.zeros(ul_size)
-    likes_idx = np.zeros(ul_size)
+
+    start_time = time.time()
+    ul_size = 10#len(users_likes_df)
+    print '\nStart building users/likes sparse matrix with size: %d' % ul_size
+    matrix = dok_matrix((len(users_df), len(likes_df)), dtype=np.int16)
+    """
     for i in range(ul_size):
         userid = users_likes_df['userid'][i]
         likeid = users_likes_df['likeid'][i]
-        users_idx[i] = users_df.loc[users_df['userid'] == userid].index[0]
-        likes_idx[i] = likes_df.loc[likes_df['likeid'] == likeid].index[0]
+        user_idx = users_df[users_df['userid'] == userid].index[0]
+        like_idx = likes_df[likes_df['likeid'] == likeid].index[0]
+        matrix[user_idx, like_idx] = 1 # FB user can issue like only once
     
-    users_found = np.shape(users_idx)[0]
-    likes_found = np.shape(likes_idx)[0]
-    print 'Building sparse matrix for users count: %s, likes count: %s' % (users_found, likes_found) 
+    """
+    users_likes_df_part = users_likes_df.head(ul_size)
+    print users_likes_df_part.describe()
+    users_idx = users_likes_df_part.userid.isin(users_df.userid)
+    
+    print '\n%s\n------------------------\n%s' % (users_likes_df_part, users_idx)
+    
+    u_index = [i for i in range(users_idx.shape[0]) if users_idx[i]]
+    
+    print '\n------------------------\n User indexes found: %s' % len(u_index)
 
-    # build sparse matrix
-    matrix = dok_matrix((len(users_df), len(likes_df)), dtype=np.int16)
-    for i in range(len(users_idx)):
-        matrix[users_idx[i], likes_idx[i]] = 1 # FB user can issue like only once
+                 
+    build_time = time.time() - start_time
+    print 'Sparse matrix build complete in: %0.2f sec with final size: %d' % (build_time, matrix.getnnz())
             
            
     # trimming data
