@@ -1,6 +1,9 @@
 # The original DataSets
 DataSets/*
 
+# The output directory
+out/*
+
 # The R studio specific
 .RData
 .Rhistory

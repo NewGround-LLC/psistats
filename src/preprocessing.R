@@ -5,11 +5,13 @@ source('./src/utils.R')
 # Loading all related data sets
 #
 users <- read.csv("DataSets/sample_dataset/users.csv")
+cat("Users:\t\t", dim(users), "\n")
+
 likes <- read.csv("DataSets/sample_dataset/likes.csv")
+cat("Likes:\t\t", dim(likes), "\n")
+
 ul <- read.csv("DataSets/sample_dataset/users-likes.csv")
-dim(users)
-dim(likes)
-dim(ul)
+cat("Users-Likes:\t", dim(ul), "\n")
 
 # Constructing a User-Like Matrix
 #
@@ -30,7 +32,12 @@ rm(ul, likes)
 # Trimming the user-footprint matrix
 #
 M <- trimMatrix(M, 150, 50)
+print("\nTrimmed matrix\n")
 printULSummary(M)
 
 # Remove users deleted in M from users object
 users <- users[match(rownames(M), users$userid),]
+
+# save intermediates
+save(M, file = "out/intermediate/M.RData")
+save(users, file = "out/intermediate/users.RData")
