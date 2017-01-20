@@ -33,6 +33,7 @@ printULSummary <- function(M) {
   usersPerLike <- colSums(M)
   cat("\nUsers per Like\n")
   printSummaryVertical(usersPerLike)
+  cat("\n\n")
 }
 
 trimMatrix <- function(M, minUsersPerLike, minLikesPerUser) {
