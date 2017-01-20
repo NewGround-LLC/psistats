@@ -1,7 +1,16 @@
+# This is preprocessing routines to convert provided CVS data files into
+# appropriate sparse matrix. As part of the process some data will be trimmed
+# by removing rare users and likes from the data (see trimMatrix).
+#
+# Make sure to set working directory appropriately - all path related
+#
 source('./src/utils.R')
 
-# Make sure to set working directory - all path related
+# The preprocessing parameters
 #
+minUsersPerLike <- 150 # the minimum number of users per like to keep like in the data (20)
+minLikesPerUser <- 50 # the minimum number of likes per user to keep user in the data (2)
+
 # Loading all related data sets
 #
 users <- read.csv("DataSets/sample_dataset/users.csv")
@@ -19,7 +28,7 @@ ul$user_row <- match(ul$userid, users$userid)
 ul$like_row <- match(ul$likeid, likes$likeid)
 
 require(Matrix)
-M <- sparseMatrix(i = ul$user_row, j = ul$like_row, x=1)
+M <- sparseMatrix(i = ul$user_row, j = ul$like_row, x = 1)
 rownames(M) <- users$userid
 colnames(M) <- likes$name
 
@@ -31,7 +40,7 @@ rm(ul, likes)
 
 # Trimming the user-footprint matrix
 #
-M <- trimMatrix(M, 150, 50)
+M <- trimMatrix(M, minUsersPerLike, minLikesPerUser)
 print("\nTrimmed matrix\n")
 printULSummary(M)
 
