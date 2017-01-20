@@ -1,6 +1,11 @@
 # The original DataSets
 DataSets/*
 
+# The R studio specific
+.RData
+.Rhistory
+.Rproj.user
+
 # The Spyder Py workspace
 src/.spyderworkspace
 
@@ -93,3 +98,4 @@ ENV/
 
 # Rope project settings
 .ropeproject
+.Rproj.user
