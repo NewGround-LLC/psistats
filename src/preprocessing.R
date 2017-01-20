@@ -21,6 +21,7 @@ parser <- OptionParser(usage = "%prog [options] file", option_list = option_list
 args <- parse_args(parser, positional_arguments = TRUE)
 opt <- args$options
 
+
 # Loading all related data sets
 #
 users <- read.csv(input_users_csv)
