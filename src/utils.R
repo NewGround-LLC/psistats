@@ -39,7 +39,7 @@ trimMatrix <- function(M, minUsersPerLike, minLikesPerUser) {
   repeat {
     i <- sum(dim(M))
     M <- M[rowSums(M) >= minLikesPerUser, colSums(M) >= minUsersPerLike]
-    if (sum(dim(M)) == i) break # nothing was removed
+    if (sum(dim(M)) == i) break # nothing was removed - finished
   }
   M
 }
