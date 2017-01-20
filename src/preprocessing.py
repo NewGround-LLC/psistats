@@ -7,11 +7,45 @@ import argparse
 import sys
 import time 
 
+import numba
+
 import pandas as pd
 import numpy as np
 from scipy.sparse import coo_matrix
 from scipy.sparse import dok_matrix
 
+@numba.jit
+def numbaStrCompare(left, right):
+    result = True
+    for i in range(32):
+        if (left[i] != right[i]):
+            result = False
+            break
+            
+    # Strings equal        
+    return result
+
+@numba.jit
+def findIndex(query, target):
+    n_target = len(target)
+    result = -1
+    for j in range(n_target):
+        if numbaStrCompare(query, target[j]):
+            result = j
+            break
+
+    return result
+
+@numba.jit
+def findIndexes(left, target):
+   n_res = len(left)
+   result = np.empty(n_res, dtype='int32')
+   for i in range(n_res):
+       index = findIndex(left[i], target)
+       result[i] = index
+
+   return result
+   
 def buildFBLikesDataSet(users_csv, likes_csv, users_likes_csv):
     """
     Method to build data set based on FB user's likes
@@ -33,10 +67,10 @@ def buildFBLikesDataSet(users_csv, likes_csv, users_likes_csv):
     
 
     start_time = time.time()
-    ul_size = 10#len(users_likes_df)
+    ul_size = 100000#len(users_likes_df)
     print '\nStart building users/likes sparse matrix with size: %d' % ul_size
     matrix = dok_matrix((len(users_df), len(likes_df)), dtype=np.int16)
-    """
+    
     for i in range(ul_size):
         userid = users_likes_df['userid'][i]
         likeid = users_likes_df['likeid'][i]
@@ -46,18 +80,13 @@ def buildFBLikesDataSet(users_csv, likes_csv, users_likes_csv):
     
     """
     users_likes_df_part = users_likes_df.head(ul_size)
-    print users_likes_df_part.describe()
-    users_idx = users_likes_df_part.userid.isin(users_df.userid)
-    
-    print '\n%s\n------------------------\n%s' % (users_likes_df_part, users_idx)
-    
-    u_index = [i for i in range(users_idx.shape[0]) if users_idx[i]]
-    
-    print '\n------------------------\n User indexes found: %s' % len(u_index)
-
+    users_idx = findIndexes(users_likes_df_part['userid'].values, users_df['userid'].values)
+   
+    print '\n------------------------\nIndices:\n%s' % (users_likes_df_part, users_idx)
+    """
                  
     build_time = time.time() - start_time
-    print 'Sparse matrix build complete in: %0.2f sec with final size: %d' % (build_time, matrix.getnnz())
+    print '\n\nSparse matrix build complete in: %0.2f sec with final size: %d' % (build_time, matrix.getnnz())
             
            
     # trimming data
