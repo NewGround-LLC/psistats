@@ -1,3 +1,33 @@
+# The function to plot scatter plot among with fitted line
+plot.fitted <- function(x, y, name, color = "red") {
+  # Unlist input
+  us <- unlist(y)
+  # Calculate local regression
+  ls <- loess(us ~ x)
+  # Predict the data to fit
+  pr.loess <- predict(ls)
+  
+  # Plot points
+  plot(x, us, type = "p", las = 1, xlab = "K", ylab = "r")
+  # Plot fit line
+  lines(pr.loess~x, col = color, lwd = 2)
+  title(main = name)
+}
+
+# The function to make linear/logistic regression predictions
+linear.fit.predict <- function(response, column, data, testFold) {
+  # check if variable is binary (0, 1 - gender in our data samples)
+  if(length(unique(na.omit(response[,column]))) == 2) {
+    # use logistic regression for binominal classification
+    fit <- glm(response[,column]~., data = data, subset = !testFold, family = "binomial")
+    return (predict(fit, data[testFold, ], type = "response")) # store predictions in test indices
+  } else {
+    # use linear regression to directly estimate variable value
+    fit<-glm(response[,column]~., data = data, subset = !testFold)
+    return (predict(fit, data[testFold, ]))
+  }
+}
+
 # The function to calculate accuracy
 accuracy <- function(groundTruth, Y) {
   if (length(unique(na.omit(groundTruth))) == 2) {
