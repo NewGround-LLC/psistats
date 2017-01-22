@@ -4,6 +4,9 @@ DataSets/*
 # The output directory
 out/*
 
+# The intermediate plots
+Rplots*.pdf
+
 # The R studio specific
 .RData
 .Rhistory
