@@ -31,14 +31,8 @@ folds <- sample(1:n_folds, size = nrow(users), replace = TRUE) # the data sample
 
 # Fill predictions list with NA
 predictions <- list()
-binary_vars <- list()
 for(var in rVars) {
   predictions[[var]] <- rep(NA, n = nrow(users))
-  if(length(unique(na.omit(users[,var]))) == 2){
-    binary_vars[[var]] <- TRUE
-  } else {
-    binary_vars[[var]] <- FALSE
-  }
 }
 
 #
@@ -53,16 +47,7 @@ for(i in 1:n_folds) {
   usersSVDrot <- as.data.frame(as.matrix(M %*% likesSVDrot))
   
   for(var in rVars) {
-    # check if variable is binary (0, 1 - gender in our data samples)
-    if(binary_vars[[var]]) {
-      # use logistic regression for binominal classification
-      fit <- glm(users[,var]~., data = usersSVDrot, subset = !test, family = "binomial")
-      predictions[[var]][test] <- predict(fit, usersSVDrot[test, ], type = "response") # store predictions in test indices
-    } else {
-      # use linear regression to directly estimate variable value
-      fit<-glm(users[,var]~., data = usersSVDrot, subset = !test)
-      predictions[[var]][test] <- predict(fit, usersSVDrot[test, ])
-    }
+    predictions[[var]][test] <- linear.fit.predict(response = users, column = var, data = usersSVDrot, testFold = test)
     print(sprintf("Model for variable [%s] complete", var))
   }
   cat("\n***\n")
