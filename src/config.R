@@ -21,3 +21,7 @@ out_intermediates_dir <- sprintf("%s/intermediate", out_dir)
 users_prdata_file <- sprintf("%s/users.RData", out_intermediates_dir)
 # The intermediate file to store preprocessed Users-Likes sparse matrix
 ul_prdata_file <- sprintf("%s/M.RData", out_intermediates_dir)
+# The intermediate file to store varimax rotated SVD scores of Users
+users_rot_varimax_file <- sprintf("%s/usersSVDrot.RData", out_intermediates_dir)
+# The cross-validation folds
+users_cv_folds_file <- sprintf("%s/folds.RData", out_intermediates_dir)
