@@ -2,9 +2,17 @@
 plot.fitted <- function(x, y, name, color = "red") {
   # Unlist input
   us <- unlist(y)
+  
+  # Generate first order linear model
+  # lin.mod <- lm(us ~ x)
+  # Generate second order linear model
+  # lin.mod2 <- lm(us ~ I(x ^ 2) + x)
+  
   # Calculate local regression
   ls <- loess(us ~ x)
   # Predict the data to fit
+  # pr.lm <- predict(lin.mod)
+  # pr.lm2 <- predict(lin.mod2)
   pr.loess <- predict(ls)
   
   # Plot points
