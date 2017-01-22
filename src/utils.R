@@ -1,3 +1,17 @@
+# The function to calculate accuracy
+accuracy <- function(groundTruth, Y) {
+  if (length(unique(na.omit(groundTruth))) == 2) {
+    # The binominal classification results - check the area under 
+    # the receiver-operating characteristics curve (AUC ROC)
+    f <- which(!is.na(groundTruth))
+    temp <- prediction(Y[f], groundTruth[f])
+    return (performance(temp,"auc")@y.values)
+  } else {
+    # The continuous values prediction results
+    return (cor(groundTruth, Y, use = "pairwise"))
+  }
+}
+
 # The value formatter for summary report
 formatValue <- function(val, digits = 10, nsmall = 0) {
   format(val, width = 12, justify = "right", digits = digits, nsmall= nsmall, big.mark = " ")
