@@ -21,6 +21,11 @@ parser <- OptionParser(usage = "%prog [options] file", option_list = option_list
 args <- parse_args(parser, positional_arguments = TRUE)
 opt <- args$options
 
+# Check that input data exist
+print("Checking that input data files exist")
+assertthat::assert_that(file.exists(input_users_csv))
+assertthat::assert_that(file.exists(input_likes_csv))
+assertthat::assert_that(file.exists(input_ul_csv))
 
 # Loading all related data sets
 #
