@@ -25,3 +25,6 @@ out_intermediates_dir <- sprintf("%s/intermediate", out_dir)
 users_prdata_file <- sprintf("%s/users.RData", out_intermediates_dir)
 # The intermediate file to store preprocessed Users-Likes sparse matrix
 ul_prdata_file <- sprintf("%s/M.RData", out_intermediates_dir)
+
+# The output file to store prediction accuracy for regression analysis
+regr_pred_accuracy_file <- sprintf("%s/pred_accuracy_regr.txt", out_dir)

@@ -16,9 +16,9 @@ assertthat::assert_that(file.exists(ul_prdata_file))
 # 
 # Load data
 load(users_prdata_file)
-cat("Users:\t\t", dim(users), "\n")
+cat(sprintf("%12s : [%d, %d]\n","Users", dim(users)[1], dim(users)[2]))
 load(ul_prdata_file)
-cat("Users-Likes:\t\t", dim(M), "\n")
+cat(sprintf("%12s : [%d, %d]\n", "Users-Likes", dim(M)[1], dim(M)[2]))
 
 # set random number generator's seed - so results will be stable from run to run
 set.seed(44)
@@ -55,10 +55,11 @@ for(i in 1:n_folds) {
 #
 # Find accuracies for all predicted variables
 print("Prediction accuracies")
+cat("Prediction accuracies:\n", file = regr_pred_accuracy_file)
 accuracies <- list()
 for(var in rVars) {
   accuracies[[var]] = accuracy(users[,var], predictions[[var]])
-  cat(sprintf("%9s : %.2f%%\n", var, (accuracies[[var]][[1]] * 100.0)))
+  cat(sprintf("%9s : %.2f%%\n", var, (accuracies[[var]][[1]] * 100.0)), file = regr_pred_accuracy_file, append = TRUE)
 }
 
 

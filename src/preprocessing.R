@@ -30,13 +30,13 @@ assertthat::assert_that(file.exists(input_ul_csv))
 # Loading all related data sets
 #
 users <- read.csv(input_users_csv)
-cat("Users:\t\t", dim(users), "\n")
+cat(sprintf("%12s : [%d, %d]\n","Users", dim(users)[1], dim(users)[2]))
 
 likes <- read.csv(input_likes_csv)
-cat("Likes:\t\t", dim(likes), "\n")
+cat(sprintf("%12s : [%d, %d]\n","Likes", dim(likes)[1], dim(likes)[2]))
 
 ul <- read.csv(input_ul_csv)
-cat("Users-Likes:\t", dim(ul), "\n")
+cat(sprintf("%12s : [%d, %d]\n","Users-Likes", dim(ul)[1], dim(ul)[2]))
 
 # Constructing a User-Like Matrix
 #
