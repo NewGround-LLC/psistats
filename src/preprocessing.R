@@ -11,15 +11,17 @@ library(optparse)
 
 # parse command line arguments
 option_list <- list(
-  make_option(c("-mu", "--min_users"), type="integer", default=150,
+  make_option(c("-u", "--min_users"), type="integer", default=150,
               help="the minimum number of users per like to keep like in the data [default %default]"),
-  make_option(c("-ml", "--min_likes"), type="integer", default=50,
+  make_option(c("-l", "--min_likes"), type="integer", default=50,
               help="the minimum number of likes per user to keep user in the data [default %default]")
 )
 parser <- OptionParser(usage = "%prog [options] file", option_list = option_list, add_help_option = TRUE, 
                        description = "This is preprocessing routines to convert provided CVS data files into appropriate sparse matrix. As part of the process some data will be trimmed by removing rare users and likes from the data.")
 args <- parse_args(parser, positional_arguments = TRUE)
 opt <- args$options
+
+print(sprintf("Min users per like: %d, min likes per user: %d", opt$min_users, opt$min_likes))
 
 # Check that input data exist
 print("Checking that input data files exist")
