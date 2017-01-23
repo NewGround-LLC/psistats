@@ -1,0 +1,32 @@
+Raw matrix
+# of users		       110 728
+# of unique Likes	      1 580 284
+# of User-Like pairs	     10 612 326
+Matrix density		        0.006 %
+Likes per User
+	Mean		           96 
+	Median		           22 
+	Minimum		            1 
+	Maximum		         7 973
+Users per Like
+	Mean		            7 
+	Median		            1 
+	Minimum		            1 
+	Maximum		        19 998
+
+
+Trimmed matrix
+# of users		       103 315
+# of unique Likes	        54 415
+# of User-Like pairs	      7 585 554
+Matrix density		        0.135 %
+Likes per User
+	Mean		           73 
+	Median		           21 
+	Minimum		            2 
+	Maximum		         3 591
+Users per Like
+	Mean		          139 
+	Median		           49 
+	Minimum		           20 
+	Maximum		        19 960

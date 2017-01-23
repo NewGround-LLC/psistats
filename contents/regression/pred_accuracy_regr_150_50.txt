@@ -1,0 +1,9 @@
+Prediction accuracies:
+   gender : 93.65%
+      age : 61.17%
+political : 87.54%
+      ope : 44.02%
+      con : 25.72%
+      ext : 30.26%
+      agr : 23.97%
+      neu : 29.11%
