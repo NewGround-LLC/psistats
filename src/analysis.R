@@ -16,9 +16,9 @@ assertthat::assert_that(file.exists(ul_prdata_file))
 # 
 # Load data
 load(users_prdata_file)
-cat("Users:\t\t", dim(users), "\n")
+cat(sprintf("%12s : [%d, %d]\n","Users", dim(users)[1], dim(users)[2]))
 load(ul_prdata_file)
-cat("Users-Likes:\t\t", dim(M), "\n")
+cat(sprintf("%12s : [%d, %d]\n", "Users-Likes", dim(M)[1], dim(M)[2]))
 
 # set random number generator seed - so results will be stable from run to run
 set.seed(44)
@@ -46,6 +46,7 @@ heatmap(users_svd_corr)
 # Do measure prediction performance for variable
 vars <- colnames(users[,-1])
 ks <- c(2:10, 15, 20, 30, 40, 50) # the numbers of SVD dimensions to test against
+par(mfrow = c(3, 3)) # arrange plots for 3 rows by 3 cols layout
 for(var in vars) {
   print(sprintf("Measure performance for: [%s]", var))
   rs <- list() # the results to hold data
