@@ -2,26 +2,33 @@
 library(ROCR)
 
 # The function to plot scatter plot among with fitted line
-plot.fitted <- function(x, y, name, color = "red") {
+plot.fitted <- function(x, y, name, type = "loess", color = "red") {
   # Unlist input
   us <- unlist(y)
   
-  # Generate first order linear model
-  # lin.mod <- lm(us ~ x)
-  # Generate second order linear model
-  # lin.mod2 <- lm(us ~ I(x ^ 2) + x)
-  # Calculate local regression
-  ls <- loess(us ~ x)
-  
-  # Predict the data to fit
-  # pr.lm <- predict(lin.mod)
-  # pr.lm2 <- predict(lin.mod2)
-  pr.loess <- predict(ls)
-  
   # Plot points
   plot(x, us, type = "p", las = 1, xlab = "K", ylab = "r")
-  # Plot fit line
-  lines(pr.loess~x, col = color, lwd = 2)
+  
+  if (type == "loess") {
+    ls <- loess(us ~ x) # Calculate local regression
+    pr.loess <- predict(ls) # Predict the data to fit
+    # Plot fit line
+    lines(pr.loess ~ x, col = color, lwd = 2)
+  } else if (type == "linear") {
+    lin.mod <- lm(us ~ x) # Generate first order linear model
+    pr.lm <- predict(lin.mod) # Predict the data to fit
+    # Plot fit line
+    lines(pr.lm ~ x, col = color, lwd = 2)
+  } else if (type == "linear2") {
+    lin.mod2 <- lm(us ~ I(x ^ 2) + x)  # Generate second order linear model
+    pr.lm2 <- predict(lin.mod2) # Predict the data to fit
+    # Plot fit line
+    lines(pr.lm2 ~ x, col = color, lwd = 2)
+  } else {
+    print(sprintf("Usupported prediction type: %s", type))
+  }
+
+  # set title
   title(main = name)
 }
 
