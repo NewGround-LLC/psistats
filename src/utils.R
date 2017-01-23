@@ -1,3 +1,6 @@
+# The required libraries
+library(ROCR)
+
 # The function to plot scatter plot among with fitted line
 plot.fitted <- function(x, y, name, color = "red") {
   # Unlist input

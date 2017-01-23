@@ -7,7 +7,6 @@ source('./src/utils.R')
 
 # Make sure that SVD and ROCR libraries installed
 library(irlba)
-library(ROCR)
 
 # Check that input data exist
 print("Checking that input data files exist")
