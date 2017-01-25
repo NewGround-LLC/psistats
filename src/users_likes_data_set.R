@@ -23,9 +23,9 @@ ul.read_data_set <- function(ul_file, users_file) {
   
   # create list and return
   list(
-    "train" = train,
-    "test" = test,
-    "features_dimension" = features_dimension
+    train = train,
+    test = test,
+    features_dimension = features_dimension
   )
 }
 
@@ -56,8 +56,8 @@ ULDataSet <- R6Class(
       # find next sample and return list with next batch of data
       batch_indx = sample(1:self$samples_dimension, size = batch_size, replace = TRUE)
       list(
-        "user_likes" = private$users_likes[batch_indx,],
-        "users" = private$users[batch_indx,]
+        users_likes = private$users_likes[batch_indx,],
+        users = private$users[batch_indx,]
       )
     }
   ),
