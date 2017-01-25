@@ -8,6 +8,8 @@
 # 3. training() - Adds to the loss model the Ops required to generate and
 # apply gradients.
 
+source('./src/utils.R')
+
 library(tensorflow)
 
 # The number of output dimensions
@@ -146,4 +148,19 @@ training <- function(loss, learning_rate) {
     train_op <- optimizer$minimize(loss, global_step = global_step)
   })
   train_op
+}
+
+# Evaluate the quality of the logits at predicting the label.
+#
+# Args:
+#   predicts: Predictions tensor, float - [batch_size, OUTPUTS_DIMENSION].
+#   ground_truth: Ground truth tensor, float - [batch_size, OUTPUTS_DIMENSION].
+#
+# Returns:
+#   A scalar float tensor with the number of accuracies for each output dimension.
+evaluation <- function(predicts, ground_truth) {
+  accuracies <- c()
+  for(i in 1:OUTPUTS_DIMENSION) {
+    accuracies[i] = accuracy(users[,var], predictions[[var]])
+  }
 }
