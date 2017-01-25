@@ -105,7 +105,7 @@ inference <- function(user_likes, hidden1_units, hidden2_units) {
 #
 loss <- function(y, y_) {
   with(tf$name_scope("MSE"), {
-    mse <- (y - y_data) ^ 2
+    mse <- (y - y_) ^ 2
     with(tf$name_scope("total"), {
       loss <- tf$reduce_mean(mse) # MSE
     })
