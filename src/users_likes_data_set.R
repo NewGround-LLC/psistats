@@ -1,6 +1,7 @@
 # The Users-Likes data set processing
 #
 library(R6)
+library(irlba)
 
 # The data set factory to load and generate data set from provided files
 #
@@ -18,13 +19,21 @@ ul.read_data_set <- function(ul_file, users_file, with_svd = FALSE, svk_k = 50) 
   cat(sprintf("%12s : [%d, %d]\n", "Users-Likes", dim(M)[1], dim(M)[2]))
   
   # prepare data
-  features_dimension <- dim(M)[2]
   folds <- sample(1:n_folds, size = nrow(users), replace = TRUE) # the data samples folds for cross-validation
   test <- folds == 1
   
+  # Apply SVD if appropriate
+  if(with_svd) {
+    # do SVD rotation
+    Msvd <- irlba(M[!test, ], nv = svk_k)
+    likesSVDrot <- unclass(varimax(Msvd$v)$loadings) # varimax rotated likes per SVD dimensions
+    M <- as.data.frame(as.matrix(M %*% likesSVDrot)) # the varimax rotated users-likes per SVD dimensions
+  }
+
   # create train/test data sets
   train <- ULDataSet$new(users = users[!test,], users_likes = M[!test,])
   test <- ULDataSet$new(users = users[test,], users_likes = M[test,])
+  features_dimension <- dim(M)[2]
   
   # release memory
   rm(M, users)
