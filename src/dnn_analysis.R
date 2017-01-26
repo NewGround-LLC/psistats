@@ -6,16 +6,27 @@ source('./src/users_likes_data_set.R')
 
 # make sure that library installed
 library(tensorflow)
+library(optparse)
 
 # Basic model parameters as external flags.
-flags <- tf$app$flags
-flags$DEFINE_float('learning_rate', 0.1, 'Initial learning rate.')
-flags$DEFINE_integer('max_steps', 5000L, 'Number of steps to run trainer.')
-flags$DEFINE_integer('hidden1', 128L, 'Number of units in hidden layer 1.')
-flags$DEFINE_integer('hidden2', 32L, 'Number of units in hidden layer 2.')
-flags$DEFINE_integer('batch_size', 100L, 'Batch size. Must divide evenly into the dataset sizes.')
-flags$DEFINE_string('train_dir', sprintf("%s/train_data", out_intermediates_dir), 'Directory to put the training data.')
-FLAGS <- parse_flags()
+option_list <- list(
+  make_option(c("--learning_rate"), type="double", default=0.1,
+              help="Initial learning rate. [default %default]"),
+  make_option(c("--max_steps"), type="integer", default=5000L,
+              help="Number of steps to run trainer. [default %default]"),
+  make_option(c("--hidden1"), type="integer", default=128L,
+              help="Number of units in hidden layer 1. [default %default]"),
+  make_option(c("--hidden2"), type="integer", default=32L,
+              help="Number of units in hidden layer 2. [default %default]"),
+  make_option(c("--batch_size"), type="integer", default=100L,
+              help="Batch size. Must divide evenly into the dataset sizes. [default %default]"),
+  make_option(c("--train_dir"), type="character", default=sprintf("%s/train_data", out_intermediates_dir),
+              help="Directory to put the training data. [default %default]")
+)
+parser <- OptionParser(usage = "%prog [options] file", option_list = option_list, add_help_option = TRUE, 
+                       description = "This is Fully Connected Feed Forward Deep Learning Network model around Tensorflow")
+args <- parse_args(parser, positional_arguments = TRUE)
+FLAGS <- args$options
 
 # set random number generator's seed - so results will be stable from run to run
 set.seed(44)
