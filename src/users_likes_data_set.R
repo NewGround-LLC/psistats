@@ -2,8 +2,16 @@
 #
 library(R6)
 
-# The data set factory
-ul.read_data_set <- function(ul_file, users_file) {
+# The data set factory to load and generate data set from provided files
+#
+# Args:
+#   ul_file: the file with Users-Likes sparse matrix
+#   users_file: the file with Users traits table
+#   with_svd: the flag to indicate if SVD should be applied to reduce features dimension [default: false]
+#   svd_k: the number of SVD dimensions [default: 50]
+# Returns:
+#   list comprising of two data sets (train, test) and number of features in data samples (features_dimension)
+ul.read_data_set <- function(ul_file, users_file, with_svd = FALSE, svk_k = 50) {
   load(users_prdata_file)
   cat(sprintf("%12s : [%d, %d]\n","Users", dim(users)[1], dim(users)[2]))
   load(ul_prdata_file)
