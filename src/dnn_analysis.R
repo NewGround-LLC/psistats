@@ -184,7 +184,7 @@ with(tf$Graph()$as_default(), {
     # Write the summaries and print an overview fairly often.
     if (step %% 100 == 0) {
       # Print status to stdout.
-      cat(sprintf('Step %d: loss = %.2f (%.3f sec)\n',
+      cat(sprintf('Step %d: loss = %.2f (%s)\n',
                   step, loss_value, duration))
       # Update the events file.
       summary_str <- sess$run(summary, feed_dict = feed_dict)
