@@ -10,7 +10,7 @@ library(irlba)
 #   users_file: the file with Users traits table
 # Returns:
 #   list comprising of two data sets (train, test) and number of features in data samples (features_dimension)
-ul.read_data_set <- function(ul_file, users_file) {
+ul_read_data_set <- function(ul_file, users_file) {
   load(users_prdata_file)
   cat(sprintf("%12s : [%d, %d]\n","Users", dim(users)[1], dim(users)[2]))
   load(ul_file)
@@ -40,7 +40,7 @@ ul.read_data_set <- function(ul_file, users_file) {
 #   ul_file: the file with full features sparse Users-Likes matrix
 #   out_file: the file to store preprocessing results
 #   svd_k: the number of SVD dimensions [default: 50]
-ul.save_features_reduced_data_set <- function(ul_file, out_file, svd_k = 50) {
+ul_save_features_reduced_data_set <- function(ul_file, out_file, svd_k = 50) {
   load(ul_prdata_file)
   cat(sprintf("%12s : [%d, %d]\n", "Users-Likes", dim(M)[1], dim(M)[2]))
   

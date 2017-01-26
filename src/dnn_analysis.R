@@ -121,7 +121,7 @@ assertthat::assert_that(file.exists(users_prdata_file))
 assertthat::assert_that(file.exists(ul_reduced_prdata_file))
 
 # Get sets of users-likes and users traits for train and test
-data_sets <- ul.read_data_set(ul_file = ul_reduced_prdata_file, users_file = users_prdata_file)
+data_sets <- ul_read_data_set(ul_file = ul_reduced_prdata_file, users_file = users_prdata_file)
 
 # Tell TensorFlow that the model will be built into the default Graph.
 with(tf$Graph()$as_default(), {
