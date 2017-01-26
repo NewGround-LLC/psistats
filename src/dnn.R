@@ -86,7 +86,7 @@ inference <- function(features, hidden1_units, hidden2_units) {
   }
   
   # Hidden 1
-  features_dimension <- dim(ul)[2]
+  features_dimension <- dim(features)[2]
   hidden1 <- nn_layer(input_tensor = features, features_dimension, hidden1_units, "hidden1")
   
   # Hidden 2
