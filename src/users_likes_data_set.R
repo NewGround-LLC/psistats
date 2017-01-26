@@ -35,13 +35,13 @@ ULDataSet <- R6Class(
   public = list(
     # The current active index
     active_index = NA,
-    # The number of data samples
-    samples_dimension = NA,
+    # The number of data examples
+    num_examples = NA,
     # Initialize
     initialize = function(users, users_likes) {
       private$users = users
       private$users_likes = users_likes
-      self$samples_dimension = dim(users)[1]
+      self$num_examples = dim(users)[1]
     },
     # Method to return batch of data with specified size
     #
@@ -52,9 +52,9 @@ ULDataSet <- R6Class(
     #     user_likes: the sparse matrix of users-likes
     #     users: the list with users' data
     next_batch = function(batch_size) {
-      assertthat::assert_that(batch_size < self$samples_dimension)
+      assertthat::assert_that(batch_size < self$num_examples)
       # find next sample and return list with next batch of data
-      batch_indx = sample(1:self$samples_dimension, size = batch_size, replace = TRUE)
+      batch_indx = sample(1:self$num_examples, size = batch_size, replace = TRUE)
       list(
         users_likes = private$users_likes[batch_indx,],
         users = private$users[batch_indx,]
