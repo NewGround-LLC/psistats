@@ -18,14 +18,14 @@ OUTPUTS_DIMENSION <- 8
 # Build the psyhodemographic data model up to where it may be used for inference.
 #
 # Args:
-#   user_likes: Users-Likes placeholder, from inputs().
+#   features: Users-Likes placeholder, from inputs().
 #   hidden1_units: Size of the first hidden layer.
 #   hidden2_units: Size of the second hidden layer.
 #
 # Returns:
 #   softmax_linear: Output tensor with the computed logits.
 #
-inference <- function(user_likes, hidden1_units, hidden2_units) {
+inference <- function(features, hidden1_units, hidden2_units) {
   # We can't initialize these variables to 0 - the network will get stuck.
   weight_variable <- function(shape) {
     initial <- tf$truncated_normal(shape, stddev = 0.1 / sqrt(shape[[2]]))
@@ -87,7 +87,7 @@ inference <- function(user_likes, hidden1_units, hidden2_units) {
   
   # Hidden 1
   features_dimension <- dim(ul)[2]
-  hidden1 <- nn_layer(input_tensor = user_likes, features_dimension, hidden1_units, "hidden1")
+  hidden1 <- nn_layer(input_tensor = features, features_dimension, hidden1_units, "hidden1")
   
   # Hidden 2
   hidden2 <- nn_layer(input_tensor = hidden1, hidden1_units, hidden2_units, "hidden2")
@@ -99,15 +99,15 @@ inference <- function(user_likes, hidden1_units, hidden2_units) {
 # Calculates the loss from the predictions and the ground truth
 #
 # Args:
-#   y: predictions tensor, float - [batch_size, OUTPUTS_DIMENSION].
-#   y_: ground truth tensor, float - [batch_size, OUTPUTS_DIMENSION].
+#   predicts: predictions tensor, float - [batch_size, OUTPUTS_DIMENSION].
+#   gt_labels: the ground truth labels tensor, float - [batch_size, OUTPUTS_DIMENSION].
 #
 # Returns:
 #   loss: Loss tensor of type float.
 #
-loss <- function(y, y_) {
+loss <- function(predicts, gt_labels) {
   with(tf$name_scope("MSE"), {
-    mse <- (y - y_) ^ 2
+    mse <- (predicts - gt_labels) ^ 2
     with(tf$name_scope("total"), {
       loss <- tf$reduce_mean(mse) # MSE
     })
@@ -154,13 +154,13 @@ training <- function(loss, learning_rate) {
 #
 # Args:
 #   predicts: Predictions tensor, float - [batch_size, OUTPUTS_DIMENSION].
-#   ground_truth: Ground truth tensor, float - [batch_size, OUTPUTS_DIMENSION].
+#   gt_labels: the ground truth labels tensor, float - [batch_size, OUTPUTS_DIMENSION].
 #
 # Returns:
 #   A scalar float tensor with the number of accuracies for each output dimension.
-evaluation <- function(predicts, ground_truth) {
+evaluation <- function(predicts, gt_labels) {
   accuracies <- c()
   for(i in 1:OUTPUTS_DIMENSION) {
-    accuracies[i] = accuracy(users[,var], predictions[[var]])
+    accuracies[i] = accuracy(groundTruth = gt_labels[[i]], Y = predicts[[i]])
   }
 }
