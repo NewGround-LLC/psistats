@@ -9,10 +9,10 @@ library(tensorflow)
 
 # Basic model parameters as external flags.
 flags <- tf$app$flags
-flags$DEFINE_float('learning_rate', 0.01, 'Initial learning rate.')
+flags$DEFINE_float('learning_rate', 0.1, 'Initial learning rate.')
 flags$DEFINE_integer('max_steps', 5000L, 'Number of steps to run trainer.')
-flags$DEFINE_integer('hidden1', 256L, 'Number of units in hidden layer 1.')
-flags$DEFINE_integer('hidden2', 64L, 'Number of units in hidden layer 2.')
+flags$DEFINE_integer('hidden1', 128L, 'Number of units in hidden layer 1.')
+flags$DEFINE_integer('hidden2', 32L, 'Number of units in hidden layer 2.')
 flags$DEFINE_integer('batch_size', 100L, 'Batch size. Must divide evenly into the dataset sizes.')
 flags$DEFINE_string('train_dir', sprintf("%s/train_data", out_intermediates_dir), 'Directory to put the training data.')
 FLAGS <- parse_flags()
@@ -118,10 +118,10 @@ do_eval <- function(sess,
 # Check that input data exist
 print("Checking that input data files exist")
 assertthat::assert_that(file.exists(users_prdata_file))
-assertthat::assert_that(file.exists(ul_prdata_file))
+assertthat::assert_that(file.exists(ul_reduced_prdata_file))
 
 # Get sets of users-likes and users traits for train and test
-data_sets <- ul.read_data_set(ul_file = ul_prdata_file, users_file = users_prdata_file)
+data_sets <- ul.read_data_set(ul_file = ul_reduced_prdata_file, users_file = users_prdata_file)
 
 # Tell TensorFlow that the model will be built into the default Graph.
 with(tf$Graph()$as_default(), {
