@@ -1,4 +1,4 @@
-# This is analysis based on Deep Learning Network build with TensorFlow framework.
+# This is analysis based on Fully Connected Feed Forward Deep Learning Network build with TensorFlow framework.
 
 source('./src/config.R')
 source('./src/dnn.R')
@@ -73,8 +73,48 @@ fill_feed_dict <- function(data_set, features_pl, labels_pl) {
   )
 }
 
-# Train users psychometric model
+# Runs one evaluation against the full epoch of data.
+#
+# Args:
+#   sess: The session in which the model has been trained.
+#   eval_correct: The Tensor that returns the number of correct predictions.
+#   features_placeholder: The features placeholder.
+#   labels_placeholder: The labels placeholder.
+#   data_set: The set of features and labels to evaluate,
+#             from input_data.read_data_sets().
+#
+do_eval <- function(sess,
+                    eval_correct,
+                    features_placeholder,
+                    labels_placeholder,
+                    data_set) {
+  # And run one epoch of eval.
+  true_count <- 0  # Counts the number of correct predictions.
+  steps_per_epoch <- data_set$num_examples %/% FLAGS$batch_size
+  num_examples <- steps_per_epoch * FLAGS$batch_size
+  # The accuracies per step
+  accuracies <- matrix(nrow = steps_per_epoch, ncol = OUTPUTS_DIMENSION)
+  # Try to go over all data examples (approximatelly, at least taking the same number of batches as during training) 
+  # and evaluate accuracy per step (batch)
+  for (step in 1:steps_per_epoch) {
+    feed_dict <- fill_feed_dict(data_set,
+                                features_placeholder,
+                                labels_placeholder)
+    accuracies[step,] <- sess$run(eval_correct, feed_dict = feed_dict)
+  }
+  
+  # show summary of results
+  acc_means <- colMeans(accuracies)
+  vars <- colnames(data_set$users) # the users traits names
+  cat("Prediction accuracies:\n")
+  for(i in 1:OUTPUTS_DIMENSION) {
+    cat(sprintf("%9s : %.2f%%\n", var, (acc_means[i] * 100.0)))
+  }
+}
 
+#
+# Train users psychometric model
+#
 # Check that input data exist
 print("Checking that input data files exist")
 assertthat::assert_that(file.exists(users_prdata_file))
@@ -99,7 +139,7 @@ with(tf$Graph()$as_default(), {
   train_op <- training(loss, FLAGS$learning_rate)
   
   # Add the Op to compare the predictions to the ground truth during evaluation.
-  #eval_correct <- evaluation(predicts, placeholders$labels)
+  eval_correct <- evaluation(predicts, placeholders$labels)
   
   # Build the summary Tensor based on the TF collection of Summaries.
   summary <- tf$summary$merge_all()
@@ -157,7 +197,22 @@ with(tf$Graph()$as_default(), {
       checkpoint_file <- file.path(FLAGS$train_dir, 'checkpoint')
       saver$save(sess, checkpoint_file, global_step = step)
       
-    }
+      # Evaluate against the training set.
+      cat('\nTraining Data Eval:\n')
+      do_eval(sess,
+              eval_correct,
+              placeholders$features,
+              placeholders$labels,
+              data_sets$train)
+      
+      # Evaluate against the test set.
+      cat('Test Data Eval:\n')
+      do_eval(sess,
+              eval_correct,
+              placeholders$features,
+              placeholders$labels,
+              data_sets$test)
+    } 
   }
 })
 
