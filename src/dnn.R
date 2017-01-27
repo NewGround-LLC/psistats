@@ -81,12 +81,12 @@ inference <- function(features, hidden1_units, hidden2_units) {
   }
   
   # The no operation function
-  noop <- function(input_tensor) {
+  noop <- function(input_tensor, name) {
     input_tensor # just return input
   }
   
   # Hidden 1
-  features_dimension <- dim(features)[2]
+  features_dimension <- features$get_shape()$as_list()[2]
   hidden1 <- nn_layer(input_tensor = features, features_dimension, hidden1_units, "hidden1")
   
   # Hidden 2
@@ -159,8 +159,39 @@ training <- function(loss, learning_rate) {
 # Returns:
 #   A scalar float tensor with the number of accuracies for each output dimension.
 evaluation <- function(predicts, gt_labels) {
-  accuracies <- c()
-  for(i in 1:OUTPUTS_DIMENSION) {
-    accuracies[i] = accuracy(groundTruth = gt_labels[[i]], Y = predicts[[i]])
-  }
+  predicts <- tf$Print(predicts, c(predicts), "Predicts: ")
+  gt_labels <- tf$Print(gt_labels, c(predicts), "Labels: ")
+  
+  with(tf$name_scope("evaluate"), {
+    # unpack tensors
+    # p_list <- tf$unstack(predicts, num = OUTPUTS_DIMENSION, axis = 1, name = "predicts_unstack")
+    # gt_list <- tf$unstack(gt_labels, num = OUTPUTS_DIMENSION, axis = 1, name = "labels_unstack")
+    
+    # calculate accuracies
+    # gender_acc <- tf$contrib$metrics$streaming_auc(p_list[0], gt_list[0], name = "gender_accuracy")
+    # age_acc <- tf$contrib$metrics$streaming_pearson_correlation(p_list[1], gt_list[1], name = "age_accuracy")
+    # political_acc <- tf$contrib$metrics$streaming_auc(p_list[2], gt_list[2], name = "political_accuracy")
+    # ope_acc <- tf$contrib$metrics$streaming_pearson_correlation(p_list[3], gt_list[3], name = "ope_accuracy")
+    # con_acc <- tf$contrib$metrics$streaming_pearson_correlation(p_list[4], gt_list[4], name = "con_accuracy")
+    # ext_acc <- tf$contrib$metrics$streaming_pearson_correlation(p_list[5], gt_list[5], name = "ext_accuracy")
+    # agr_acc <- tf$contrib$metrics$streaming_pearson_correlation(p_list[6], gt_list[6], name = "agr_accuracy")
+    # neu_acc <- tf$contrib$metrics$streaming_pearson_correlation(p_list[7], gt_list[7], name = "neu_accuracy")
+
+    p_list <- predicts
+    gt_list <- gt_labels
+    gender_acc <- tf$contrib$metrics$streaming_auc(p_list[,0], gt_list[,0], name = "gender_accuracy")
+    age_acc <- tf$contrib$metrics$streaming_pearson_correlation(p_list[,1], gt_list[,1], name = "age_accuracy")
+    political_acc <- tf$contrib$metrics$streaming_auc(p_list[,2], gt_list[,2], name = "political_accuracy")
+    ope_acc <- tf$contrib$metrics$streaming_pearson_correlation(p_list[,3], gt_list[,3], name = "ope_accuracy")
+    con_acc <- tf$contrib$metrics$streaming_pearson_correlation(p_list[,4], gt_list[,4], name = "con_accuracy")
+    ext_acc <- tf$contrib$metrics$streaming_pearson_correlation(p_list[,5], gt_list[,5], name = "ext_accuracy")
+    agr_acc <- tf$contrib$metrics$streaming_pearson_correlation(p_list[,6], gt_list[,6], name = "agr_accuracy")
+    neu_acc <- tf$contrib$metrics$streaming_pearson_correlation(p_list[,7], gt_list[,7], name = "neu_accuracy")
+
+    # accuracies <- tf$stack(c(gender_acc[1], age_acc[1], political_acc[1],
+    #                          ope_acc[1], con_acc[1], ext_acc[1], agr_acc[1],
+    #                          neu_acc[1]), name = "accuracies")
+  })
+  # accuracies
+  age_acc
 }

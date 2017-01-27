@@ -20,7 +20,7 @@ option_list <- list(
               help="Number of units in hidden layer 2. [default %default]"),
   make_option(c("--batch_size"), type="integer", default=100L,
               help="Batch size. Must divide evenly into the dataset sizes. [default %default]"),
-  make_option(c("--train_dir"), type="character", default=sprintf("%s/train_data", out_intermediates_dir),
+  make_option(c("--train_dir"), type="character", default=sprintf("%s/train_data", out_dir),
               help="Directory to put the training data. [default %default]")
 )
 parser <- OptionParser(usage = "%prog [options] file", option_list = option_list, add_help_option = TRUE, 
@@ -50,7 +50,7 @@ placeholder_inputs <- function(batch_size, features_dimensions) {
   # User-Likes and user traits tensors, except the first dimension is now batch_size
   # rather than the full size of the train or test data sets.
   features <- tf$placeholder(tf$float32, shape(batch_size, features_dimensions))
-  user_traits <- tf$placeholder(tf$int32, shape(batch_size, OUTPUTS_DIMENSION))
+  user_traits <- tf$placeholder(tf$float32, shape(batch_size, OUTPUTS_DIMENSION))
   
   # return both placeholders
   list(features = features, labels = user_traits)
@@ -78,9 +78,13 @@ fill_feed_dict <- function(data_set, features_pl, labels_pl) {
   batch <- data_set$next_batch(FLAGS$batch_size)
   users_preprocessed = batch$users[,-1] # removing userid - it has unique value
   #users_preprocessed['age'] <- scale(batch$users['age']) # scale and center AGE
+  
+  # Convert data sets to matrix
+  t_users <- as.matrix(users_preprocessed)
+  t_ul <- as.matrix(batch$users_likes)
   dict(
-    features_pl = batch$users_likes,
-    labels_pl = users_preprocessed
+    features_pl = t_ul,
+    labels_pl = t_users
   )
 }
 
@@ -100,7 +104,6 @@ do_eval <- function(sess,
                     labels_placeholder,
                     data_set) {
   # And run one epoch of eval.
-  true_count <- 0  # Counts the number of correct predictions.
   steps_per_epoch <- data_set$num_examples %/% FLAGS$batch_size
   num_examples <- steps_per_epoch * FLAGS$batch_size
   # The accuracies per step
@@ -111,7 +114,8 @@ do_eval <- function(sess,
     feed_dict <- fill_feed_dict(data_set,
                                 features_placeholder,
                                 labels_placeholder)
-    accuracies[step,] <- sess$run(eval_correct, feed_dict = feed_dict)
+    acc_tensor <- sess$run(eval_correct, feed_dict = feed_dict)
+    accuracies[step,] <- tf$contrib$util$make_ndarray(acc_tensor)
   }
   
   # show summary of results
@@ -126,6 +130,8 @@ do_eval <- function(sess,
 #
 # Train users psychometric model
 #
+tf$logging$set_verbosity(verbosity = tf$logging$DEBUG)
+
 # Check that input data exist
 print("Checking that input data files exist")
 assertthat::assert_that(file.exists(users_prdata_file))
@@ -204,7 +210,7 @@ with(tf$Graph()$as_default(), {
     }
     
     # Save a checkpoint and evaluate the model periodically.
-    if ((step + 1) %% 1000 == 0 || (step + 1) == FLAGS$max_steps) {
+    if ((step + 1) %% 10 == 0 || (step + 1) == FLAGS$max_steps) {
       checkpoint_file <- file.path(FLAGS$train_dir, 'checkpoint')
       saver$save(sess, checkpoint_file, global_step = step)
       
