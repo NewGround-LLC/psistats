@@ -11,13 +11,13 @@ library(optparse)
 
 # Basic model parameters as external flags.
 option_list <- list(
-  make_option(c("--learning_rate"), type="double", default=0.05,
+  make_option(c("--learning_rate"), type="double", default=0.01,
               help="Initial learning rate. [default %default]"),
-  make_option(c("--max_steps"), type="integer", default=10000L,
+  make_option(c("--max_steps"), type="integer", default=50000L,
               help="Number of steps to run trainer. [default %default]"),
-  make_option(c("--hidden1"), type="integer", default=128L,
+  make_option(c("--hidden1"), type="integer", default=256L,
               help="Number of units in hidden layer 1. [default %default]"),
-  make_option(c("--hidden2"), type="integer", default=32L,
+  make_option(c("--hidden2"), type="integer", default=64L,
               help="Number of units in hidden layer 2. [default %default]"),
   make_option(c("--batch_size"), type="integer", default=100L,
               help="Batch size. Must divide evenly into the dataset sizes. [default %default]"),
@@ -241,6 +241,10 @@ with(tf$Graph()$as_default(), {
               data_sets$test)
     } 
   }
+  
+  # Final details about method
+  cat(sprintf("Learning rate: %.4f, input_features = %d, hidden1 = %d, hidden2 = %d",
+              FLAGS$learning_rate, data_sets$features_dimension, FLAGS$hidden1, FLAGS$hidden2))
 })
 
 
