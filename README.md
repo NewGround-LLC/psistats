@@ -3,12 +3,14 @@ In this work I'll try to accomplish performance analysis of various machine lear
 # Data Set
 The sample data set using in this research may be acquired from [TUTORIAL: Mining Big Data to Extract Patterns and Predict Real-Life Outcomes][1], which is kindly provided by M. Kosinski.
 The following three files can be downloaded from the mentioned website:
+
 1. _users.csv:_ contains psychodemographic user profiles. It has nu = 110,728 rows (excluding the row holding column names) and nine columns: anonymized user ID, gender (“0” for male and “1” for female), age, political views (“0” for Democrat and “1” for Republican), and scores of five-factor model of personality (Goldberg et al., 2006).
 2. _likes.csv:_ contains anonymized IDs and names of nL = 1,580,284 Facebook Likes. It has two columns: ID and name.
 3. _users-likes.csv:_ contains the associations between users and their Likes, stored as user–Like pairs. It has nu-L = 10,612,326 rows and two columns: user ID and Like ID. An existence of a user–Like pair implies that a given user had the corresponding Like on their profile.
 
 # Data preprocessing
 In order to use provided data corpus it should be preprocessed with following steps:
+
 1. Construction of sparse users-likes matrix which presents many-to-many relationships between users and their digital footprints in the form of collected Facebook likes. The constructed matrix is extremely big with high sparsity, so it is appropriate to operate with it and store it in _sparse data format_, which is optimized for such kind of data.
 2. Trimming of sparse users-likes matrix in order to exclude rare data which has no significance
 3. Dimensionality reduction in order to reduce extremely large number of features in the generated data corpus
@@ -43,6 +45,7 @@ As result of users-likes matrix trimming we obtain significantly reduced data co
 ### Dimensionality reduction with SVD
 The users-likes matrix after preprocessing still have extreme count of features per data sample. In order to make it more maintenable we will consider applying singular value decomposition (SVD, Golub, G. H., & Reinsch, 1970), representing eigendecomposition-based methods, projecting a set of data points into a set of dimensions.
 Reducing the dimensionality of data corpus has number of advantages:
+
 1. With reduced features space we can use fewer number of data samples as it is required by most of analysis algorithms that number of data samples exceeds number of features (input variables)
 2. It will reduce risk of overfitting and increase statistical power of results
 3. It will remove multicollinearity and redundancy in data corpus by grouping related features (variables) in single dimension
