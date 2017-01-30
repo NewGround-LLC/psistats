@@ -67,11 +67,16 @@ ULDataSet <- R6Class(
     active_index = NA,
     # The number of data examples
     num_examples = NA,
+    # The column names of target data
+    labels_names = NA,
+    # The batch indices selected during last sampling
+    batch_sampling_indices = NA,
     # Initialize
     initialize = function(users, users_likes) {
       private$users = users
       private$users_likes = users_likes
       self$num_examples = dim(users)[1]
+      self$labels_names = colnames(users)
     },
     # Method to return batch of data with specified size
     #
@@ -84,10 +89,10 @@ ULDataSet <- R6Class(
     next_batch = function(batch_size) {
       assertthat::assert_that(batch_size < self$num_examples)
       # find next sample and return list with next batch of data
-      batch_indx = sample(1:self$num_examples, size = batch_size, replace = TRUE)
+      self$batch_sampling_indices = sample(1:self$num_examples, size = batch_size, replace = TRUE)
       list(
-        users_likes = private$users_likes[batch_indx,],
-        users = private$users[batch_indx,]
+        users_likes = private$users_likes[self$batch_sampling_indices,],
+        users = private$users[self$batch_sampling_indices,]
       )
     }
   ),
