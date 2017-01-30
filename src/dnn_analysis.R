@@ -11,9 +11,9 @@ library(optparse)
 
 # Basic model parameters as external flags.
 option_list <- list(
-  make_option(c("--learning_rate"), type="double", default=0.1,
+  make_option(c("--learning_rate"), type="double", default=0.5,
               help="Initial learning rate. [default %default]"),
-  make_option(c("--max_steps"), type="integer", default=5000L,
+  make_option(c("--max_steps"), type="integer", default=10000L,
               help="Number of steps to run trainer. [default %default]"),
   make_option(c("--hidden1"), type="integer", default=128L,
               help="Number of units in hidden layer 1. [default %default]"),
@@ -220,7 +220,7 @@ with(tf$Graph()$as_default(), {
     }
     
     # Save a checkpoint and evaluate the model periodically.
-    if ((step + 1) %% 1000 == 0 || (step + 1) == FLAGS$max_steps) {
+    if ((step + 1) %% 2000 == 0 || (step + 1) == FLAGS$max_steps) {
       checkpoint_file <- file.path(FLAGS$train_dir, 'checkpoint')
       saver$save(sess, checkpoint_file, global_step = step)
       
