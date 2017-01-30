@@ -3,6 +3,7 @@
 source('./src/config.R')
 source('./src/dnn.R')
 source('./src/users_likes_data_set.R')
+source('./src/utils.R')
 
 # make sure that library installed
 library(tensorflow)
@@ -92,38 +93,47 @@ fill_feed_dict <- function(data_set, features_pl, labels_pl) {
 #
 # Args:
 #   sess: The session in which the model has been trained.
-#   eval_correct: The Tensor that returns the number of correct predictions.
+#   predict_op: The Tensor that returns model predictions.
 #   features_placeholder: The features placeholder.
 #   labels_placeholder: The labels placeholder.
 #   data_set: The set of features and labels to evaluate,
 #             from input_data.read_data_sets().
 #
 do_eval <- function(sess,
-                    eval_correct,
+                    predict_op,
                     features_placeholder,
                     labels_placeholder,
                     data_set) {
   # And run one epoch of eval.
   steps_per_epoch <- data_set$num_examples %/% FLAGS$batch_size
   num_examples <- steps_per_epoch * FLAGS$batch_size
-  # The accuracies per step
-  accuracies <- matrix(nrow = steps_per_epoch, ncol = OUTPUTS_DIMENSION)
+  # The collected predictions vs labes per step
+  predictions <- data.frame()
+  labels <- data.frame()
   # Try to go over all data examples (approximatelly, at least taking the same number of batches as during training) 
   # and evaluate accuracy per step (batch)
   for (step in 1:steps_per_epoch) {
     feed_dict <- fill_feed_dict(data_set,
                                 features_placeholder,
                                 labels_placeholder)
-    acc_tensor <- sess$run(eval_correct, feed_dict = feed_dict)
-    accuracies[step,] <- tf$contrib$util$make_ndarray(acc_tensor)
+    predicted <- sess$run(predict_op, feed_dict = feed_dict)
+    predictions <- rbind(predictions, predicted)
+    labels <- rbind(labels, feed_dict$items()[[2]][[2]])
   }
   
   # show summary of results
-  acc_means <- colMeans(accuracies)
-  vars <- colnames(data_set$users) # the users traits names
+  vars <- data_set$labels_names[-1]
+  accuracies <- list()
   cat("Prediction accuracies:\n")
   for(i in 1:OUTPUTS_DIMENSION) {
-    cat(sprintf("%9s : %.2f%%\n", var, (acc_means[i] * 100.0)))
+    # fix predictions
+    nan_ind <- which(predictions[,i] == 'NaN')
+    predictions[,i][nan_ind] <- NA
+    
+    # find accuracies per column
+    accuracies[[i]] = accuracy(labels[,i], predictions[,i])
+    # cat(sprintf("%9s : %.2f%%\n", vars[i], (accuracies[[i]][[1]] * 100.0)), file = regr_pred_accuracy_file, append = TRUE)
+    cat(sprintf("%9s : %.2f%%\n", vars[i], (accuracies[[i]][[1]] * 100.0))) # to console
   }
 }
 
@@ -156,7 +166,7 @@ with(tf$Graph()$as_default(), {
   train_op <- training(loss, FLAGS$learning_rate)
   
   # Add the Op to compare the predictions to the ground truth during evaluation.
-  eval_correct <- evaluation(predicts, placeholders$labels)
+  # eval_correct <- evaluation(predicts, placeholders$labels)
   
   # Build the summary Tensor based on the TF collection of Summaries.
   summary <- tf$summary$merge_all()
@@ -210,14 +220,14 @@ with(tf$Graph()$as_default(), {
     }
     
     # Save a checkpoint and evaluate the model periodically.
-    if ((step + 1) %% 10 == 0 || (step + 1) == FLAGS$max_steps) {
+    if ((step + 1) %% 1000 == 0 || (step + 1) == FLAGS$max_steps) {
       checkpoint_file <- file.path(FLAGS$train_dir, 'checkpoint')
       saver$save(sess, checkpoint_file, global_step = step)
       
       # Evaluate against the training set.
       cat('\nTraining Data Eval:\n')
       do_eval(sess,
-              eval_correct,
+              predicts,
               placeholders$features,
               placeholders$labels,
               data_sets$train)
@@ -225,7 +235,7 @@ with(tf$Graph()$as_default(), {
       # Evaluate against the test set.
       cat('Test Data Eval:\n')
       do_eval(sess,
-              eval_correct,
+              predicts,
               placeholders$features,
               placeholders$labels,
               data_sets$test)
