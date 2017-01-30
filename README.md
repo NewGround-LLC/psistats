@@ -1,8 +1,6 @@
 # Overview
--------------
 In this work I'll try to accomplish performance analysis of various machine learning (ML) algorithms and methodologies over data corpus comprising of Facebook likes and psychodemographic traits of users associated with likes. The psychodemographic traits based on the five-factor (i.e., Openness, Conscientiousness, Extroversion, Agreeable- ness, and Neuroticism) model of personality (Goldberg et al., 2006) and was collected through Facebook application (Kosinski et al., 2016). The main goal of this research is to compare various ML algorithms against data corpus and to find best solution.
 # Data Set
--------------
 The sample data set using in this research may be acquired from [TUTORIAL: Mining Big Data to Extract Patterns and Predict Real-Life Outcomes][1], which is kindly provided by M. Kosinski.
 The following three files can be downloaded from the mentioned website:
 1. _users.csv:_ contains psychodemographic user profiles. It has nu = 110,728 rows (excluding the row holding column names) and nine columns: anonymized user ID, gender (“0” for male and “1” for female), age, political views (“0” for Democrat and “1” for Republican), and scores of five-factor model of personality (Goldberg et al., 2006).
@@ -10,7 +8,6 @@ The following three files can be downloaded from the mentioned website:
 3. _users-likes.csv:_ contains the associations between users and their Likes, stored as user–Like pairs. It has nu-L = 10,612,326 rows and two columns: user ID and Like ID. An existence of a user–Like pair implies that a given user had the corresponding Like on their profile.
 
 # Data preprocessing
--------------
 In order to use provided data corpus it should be preprocessed with following steps:
 1. Construction of sparse users-likes matrix which presents many-to-many relationships between users and their digital footprints in the form of collected Facebook likes. The constructed matrix is extremely big with high sparsity, so it is appropriate to operate with it and store it in _sparse data format_, which is optimized for such kind of data.
 2. Trimming of sparse users-likes matrix in order to exclude rare data which has no significance
@@ -57,7 +54,6 @@ The factor fotation analysis techniques can be used to simplify SVD dimensions a
 We will apply one of the most popular orthogonal rotation - varimax. It minimizes both the number of dimensions related to each variable and the number of variables related to each dimension, thus improving the interpretability of the data.
 
 # References
--------------
 Michal Kosinski, Yilun Wang, Himabindu Lakkaraju, and Jure Leskovec, © 2016 American Psychological Association. Mining Big Data to Extract Patterns and Predict Real-Life Outcomes. Psychological Methods 2016, Vol. 21, No. 4, 493–506. http://dx.doi.org/10.1037/met0000105
 
 Goldberg, L. R., Johnson, J. A., Eber, H. W., Hogan, R., Ashton, M. C., Cloninger, C. R., & Gough, H. G. (2006). The International Personality Item Pool and the future of public-domain personality measures. Journal of Research in Personality, 40, 84–96. http://dx.doi.org/10.1016/j.jrp.2005.08.007
