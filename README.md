@@ -70,7 +70,10 @@ Reducing the dimensionality of data corpus has number of advantages:
 
 ### Factor rotation analysis
 The factor rotation analysis techniques can be used to simplify SVD dimensions and increase their interpretability by mapping the original multidimensional space into a new, rotated space. Rotation approaches can be orthogonal (i.e., producing uncorrelated dimensions) or oblique (i.e., allowing for correlations between rotated dimensions).
+
 We will apply one of the most popular orthogonal rotation - varimax. It minimizes both the number of dimensions related to each variable and the number of variables related to each dimension, thus improving the interpretability of the data.
+
+For more details on rotation techniques, see (Abdi, 2003).
 
 # References
 Michal Kosinski, Yilun Wang, Himabindu Lakkaraju, and Jure Leskovec, © 2016 American Psychological Association. Mining Big Data to Extract Patterns and Predict Real-Life Outcomes. Psychological Methods 2016, Vol. 21, No. 4, 493–506. http://dx.doi.org/10.1037/met0000105
@@ -80,6 +83,8 @@ Lambiotte, R., & Kosinski, M. (2014). Tracking the digital footprints of persona
 Goldberg, L. R., Johnson, J. A., Eber, H. W., Hogan, R., Ashton, M. C., Cloninger, C. R., & Gough, H. G. (2006). The International Personality Item Pool and the future of public-domain personality measures. Journal of Research in Personality, 40, 84–96. http://dx.doi.org/10.1016/j.jrp.2005.08.007
 
 Golub, G. H., & Reinsch, C. (1970). Singular value decomposition and least squares solutions. Numerische Mathematik, 14, 403– 420. http://dx.doi.org/10.1007/BF02163027
+
+Abdi, H. (2003). Factor rotations in factor analyses. In M. Lewis-Beck, A. E. Bryman, & T. F. Liao (Eds.), The SAGE encyclopedia of social science research methods (pp. 792–795). Thousand Oaks, CA: SAGE.
 
 R Core Team, (2015). R: A language and environment for statistical computing. Vienna, Austria: R Foundation for Statistical Computing. Retrieved from http://www.R-project.org/
 
