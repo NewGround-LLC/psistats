@@ -51,6 +51,7 @@ for(var in vars) {
   print(sprintf("Measure performance for: [%s]", var))
   rs <- list() # the results to hold data
   for(i in ks) {
+    cat(sprintf("ks: %d\n", i))
     likesSVDrot <- unclass(varimax(Msvd$v[,1:i])$loadings)
     usersSVDrot <- as.data.frame(as.matrix(M %*% likesSVDrot))
     
