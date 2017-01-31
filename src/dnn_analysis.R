@@ -11,7 +11,7 @@ library(optparse)
 
 # Basic model parameters as external flags.
 option_list <- list(
-  make_option(c("--learning_rate"), type="double", default=0.01,
+  make_option(c("--learning_rate"), type="double", default=0.05,
               help="Initial learning rate. [default %default]"),
   make_option(c("--max_steps"), type="integer", default=50000L,
               help="Number of steps to run trainer. [default %default]"),
