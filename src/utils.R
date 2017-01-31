@@ -51,12 +51,17 @@ accuracy <- function(groundTruth, Y) {
   if (length(unique(na.omit(groundTruth))) == 2) {
     # The binominal classification results - check the area under 
     # the receiver-operating characteristics curve (AUC ROC)
-    f <- which(!is.na(groundTruth)) + which(!is.na(Y))
-    if(length(f) == 0) {
+    not_na <- !is.na(groundTruth) & !is.na(unname(Y)) # AND
+    indx <- which(not_na)
+    if(length(indx) == 0) {
       return (NA) # nothing to compare
     } else {
-      temp <- prediction(Y[f], groundTruth[f])
-      return (performance(temp,"auc")@y.values)
+      temp <- prediction(Y[indx], groundTruth[indx])
+      if (is.na(temp@n.pos[[1]])) {
+        return (NA) # not enough predcitions
+      } else {
+        return (performance(temp,"auc")@y.values)
+      }
     }
   } else {
     # The continuous values prediction results
