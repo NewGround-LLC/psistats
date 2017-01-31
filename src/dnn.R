@@ -136,7 +136,8 @@ training <- function(loss, learning_rate) {
     tf$summary$scalar(loss$op$name, loss)
     
     # Create the gradient descent optimizer with the given learning rate.
-    optimizer <- tf$train$GradientDescentOptimizer(learning_rate)
+    #optimizer <- tf$train$GradientDescentOptimizer(learning_rate)
+    optimizer <- tf$train$AdagradOptimizer(learning_rate = learning_rate)
     
     # Create a variable to track the global step.
     global_step <- tf$Variable(0L, name = 'global_step', trainable = FALSE)
