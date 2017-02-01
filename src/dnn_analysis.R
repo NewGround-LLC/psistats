@@ -11,7 +11,7 @@ library(optparse)
 
 # Basic model parameters as external flags.
 option_list <- list(
-  make_option(c("--learning_rate"), type="double", default=0.01,
+  make_option(c("--learning_rate"), type="double", default=0.05,
               help="Initial learning rate. [default %default]"),
   make_option(c("--max_steps"), type="integer", default=50000L,
               help="Number of steps to run trainer. [default %default]"),
@@ -136,6 +136,17 @@ do_eval <- function(sess,
     labels <- rbind(labels, feed_dict$items()[[2]][[2]])
   }
   
+  # function to replace negative values for specified column with NA
+  neg_to_na <- function(x, col_index) {
+    neg_indx <- which(x[,col_index] == 0.5)
+    x[neg_indx, col_index] <- NA
+    x
+  }
+  
+  # adjust predictions and labels by replacing negative scores in Political column with NA
+  predictions <- neg_to_na(predictions, 3)
+  labels <- neg_to_na(labels, 3)
+  
   # show summary of results
   vars <- data_set$labels_names[-1]
   accuracies <- list()
@@ -218,7 +229,8 @@ with(tf$Graph()$as_default(), {
     feed_dict <- fill_feed_dict(data_set = data_sets$train,
                                 features_pl = placeholders$features,
                                 labels_pl = placeholders$labels,
-                                keep_prob_pl = placeholders$keep_prob, TRUE)
+                                keep_prob_pl = placeholders$keep_prob, 
+                                train = TRUE)
     
     # Run one step of the model.  The return values are the activations
     # from the `train_op` (which is discarded) and the `loss` Op.  To
@@ -232,7 +244,8 @@ with(tf$Graph()$as_default(), {
     test_feed_dict <- fill_feed_dict(data_set = data_sets$test,
                                      features_pl = placeholders$features,
                                      labels_pl = placeholders$labels,
-                                     keep_prob_pl = placeholders$keep_prob, FALSE)
+                                     keep_prob_pl = placeholders$keep_prob, 
+                                     train = FALSE)
     test_loss_value <- sess$run(loss_test_op, feed_dict = test_feed_dict)
     
     # The duration of train step
@@ -261,7 +274,7 @@ with(tf$Graph()$as_default(), {
               placeholders$features,
               placeholders$labels,
               placeholders$keep_prob,
-              data_sets$train, TRUE)
+              data_sets$train, train = TRUE)
       
       # Evaluate against the test set.
       cat('Test Data Eval:\n')
@@ -270,7 +283,7 @@ with(tf$Graph()$as_default(), {
               placeholders$features,
               placeholders$labels,
               placeholders$keep_prob,
-              data_sets$test, FALSE)
+              data_sets$test, train = FALSE)
     } 
   }
   
