@@ -94,7 +94,24 @@ inference <- function(features, hidden1_units, hidden2_units) {
   nn_layer(input_tensor = hidden2, hidden2_units, OUTPUTS_DIMENSION, "linear", act = noop)
 }
 
-# Calculates the loss from the predictions and the ground truth
+# Calculates prediction error from the predictions and the ground truth
+#
+# Args:
+#   predicts: predictions tensor, float - [batch_size, OUTPUTS_DIMENSION].
+#   gt_labels: the ground truth labels tensor, float - [batch_size, OUTPUTS_DIMENSION].
+#
+# Returns:
+#   loss: prediction error tensor of type float.
+prediction_error <- function(predicts, gt_labels) {
+  err <- (predicts - gt_labels) ^ 2 # Squared Error
+  #err <- tf$abs(predicts - gt_labels) # Absolute Error
+  with(tf$name_scope("total"), {
+    loss <- tf$reduce_mean(err) # Mean Squared(Absolute) Error
+  })
+  loss
+}
+
+# Calculates the train loss from the predictions and the ground truth
 #
 # Args:
 #   predicts: predictions tensor, float - [batch_size, OUTPUTS_DIMENSION].
@@ -104,13 +121,26 @@ inference <- function(features, hidden1_units, hidden2_units) {
 #   loss: Loss tensor of type float.
 #
 loss <- function(predicts, gt_labels) {
-  with(tf$name_scope("MSE"), {
-    err <- (predicts - gt_labels) ^ 2 # Squared Error
-    #err <- tf$abs(predicts - gt_labels) # Absolute Error
-    with(tf$name_scope("total"), {
-      loss <- tf$reduce_mean(err) # Mean Squared(Absolute) Error
-    })
-    tf$summary$scalar("MSE", loss)
+  with(tf$name_scope("Train_Loss"), {
+    loss <- prediction_error(predicts, gt_labels)
+    tf$summary$scalar("loss", loss)
+  })
+  loss
+}
+
+# Calculates the test loss from the predictions and the ground truth
+#
+# Args:
+#   predicts: predictions tensor, float - [batch_size, OUTPUTS_DIMENSION].
+#   gt_labels: the ground truth labels tensor, float - [batch_size, OUTPUTS_DIMENSION].
+#
+# Returns:
+#   loss: Loss tensor of type float.
+#
+loss_test <- function(predicts, gt_labels) {
+  with(tf$name_scope("Test_Loss"), {
+    loss <- prediction_error(predicts, gt_labels)
+    tf$summary$scalar("loss", loss)
   })
   loss
 }
