@@ -11,7 +11,7 @@ library(optparse)
 
 # Basic model parameters as external flags.
 option_list <- list(
-  make_option(c("--learning_rate"), type="double", default=0.05,
+  make_option(c("--learning_rate"), type="double", default=0.01,
               help="Initial learning rate. [default %default]"),
   make_option(c("--max_steps"), type="integer", default=50000L,
               help="Number of steps to run trainer. [default %default]"),
@@ -135,6 +135,10 @@ do_eval <- function(sess,
     # cat(sprintf("%9s : %.2f%%\n", vars[i], (accuracies[[i]][[1]] * 100.0)), file = regr_pred_accuracy_file, append = TRUE)
     cat(sprintf("%9s : %.2f%%\n", vars[i], (accuracies[[i]][[1]] * 100.0))) # to console
   }
+  # Calculate loss
+  err <- (predictions - labels) ^ 2
+  loss <- mean(err) # MSE
+  cat(sprintf("Evaluation loss: %.2f\n", loss))
 }
 
 #
@@ -159,11 +163,13 @@ with(tf$Graph()$as_default(), {
   # Build a Graph that computes predictions from the inference model.
   predicts <- inference(placeholders$features, FLAGS$hidden1, FLAGS$hidden2)
   
-  # Add to the Graph the Ops for loss calculation.
-  loss <- loss(predicts, placeholders$labels)
+  # Add to the Graph the Ops for training loss calculation.
+  loss_op <- loss(predicts, placeholders$labels)
+  # Add to the Graph the Ops for test loss calculation.
+  loss_test_op <- loss_test(predicts, placeholders$labels)
   
   # Add to the Graph the Ops that calculate and apply gradients.
-  train_op <- training(loss, FLAGS$learning_rate)
+  train_op <- training(loss_op, FLAGS$learning_rate)
   
   # Add the Op to compare the predictions to the ground truth during evaluation.
   # eval_correct <- evaluation(predicts, placeholders$labels)
@@ -203,16 +209,23 @@ with(tf$Graph()$as_default(), {
     # inspect the values of your Ops or variables, you may include them
     # in the list passed to sess.run() and the value tensors will be
     # returned in the tuple from the call.
-    values <- sess$run(list(train_op, loss), feed_dict = feed_dict)
-    loss_value <- values[[2]]
+    values <- sess$run(list(train_op, loss_op), feed_dict = feed_dict)
+    train_loss_value <- values[[2]]
     
+    # Calculate loss over test data
+    test_feed_dict <- fill_feed_dict(data_set = data_sets$test,
+                                     features_pl = placeholders$features,
+                                     labels_pl = placeholders$labels)
+    test_loss_value <- sess$run(loss_test_op, feed_dict = test_feed_dict)
+    
+    # The duration of train step
     duration <- Sys.time() - start_time
     
     # Write the summaries and print an overview fairly often.
     if (step %% 100 == 0) {
       # Print status to stdout.
-      cat(sprintf('Step %d: loss = %.2f (%s)\n',
-                  step, loss_value, duration))
+      cat(sprintf('Step %d: train loss = %.2f, test loss = %.2f (duration: %s)\n',
+                  step, train_loss_value, test_loss_value, duration))
       # Update the events file.
       summary_str <- sess$run(summary, feed_dict = feed_dict)
       summary_writer$add_summary(summary_str, step)
