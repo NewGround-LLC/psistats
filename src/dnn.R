@@ -19,11 +19,12 @@ OUTPUTS_DIMENSION <- 8
 #   features: Users-Likes placeholder, from inputs().
 #   hidden1_units: Size of the first hidden layer.
 #   hidden2_units: Size of the second hidden layer.
+#   dropout_keep_prob: the keep probability for dropout
 #
 # Returns:
 #   softmax_linear: Output tensor with the computed logits.
 #
-inference <- function(features, hidden1_units, hidden2_units) {
+inference <- function(features, hidden1_units, hidden2_units, dropout_keep_prob) {
   # We can't initialize these variables to 0 - the network will get stuck.
   weight_variable <- function(shape) {
     initial <- tf$truncated_normal(shape, stddev = 0.1 / sqrt(shape[[2]]))
@@ -87,8 +88,14 @@ inference <- function(features, hidden1_units, hidden2_units) {
   features_dimension <- features$get_shape()$as_list()[2]
   hidden1 <- nn_layer(input_tensor = features, features_dimension, hidden1_units, "hidden1")
   
+  # Apply dropout to avoid model overfitting on training data
+  with(tf$name_scope("dropout"), {
+    tf$summary$scalar("dropout_keep_probability", dropout_keep_prob)
+    dropped <- tf$nn$dropout(hidden1, dropout_keep_prob)
+  })
+  
   # Hidden 2
-  hidden2 <- nn_layer(input_tensor = hidden1, hidden1_units, hidden2_units, "hidden2")
+  hidden2 <- nn_layer(input_tensor = dropped, hidden1_units, hidden2_units, "hidden2")
   
   # Return linear regression output layer
   nn_layer(input_tensor = hidden2, hidden2_units, OUTPUTS_DIMENSION, "linear", act = noop)
