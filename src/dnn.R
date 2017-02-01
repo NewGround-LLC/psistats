@@ -84,21 +84,31 @@ inference <- function(features, hidden1_units, hidden2_units, keep_prob) {
     input_tensor # just return input
   }
   
+  # The dropout function
+  dropout <- function(input_tensor, keep_prob_tensor, layer_name) {
+    with(tf$name_scope(layer_name), {
+      tf$summary$scalar("dropout_keep_probability", keep_prob_tensor)
+      dropped <- tf$nn$dropout(input_tensor, keep_prob_tensor)
+    })
+    dropped
+  }
+  
   # Hidden 1
   features_dimension <- features$get_shape()$as_list()[2]
-  hidden1 <- nn_layer(input_tensor = features, features_dimension, hidden1_units, "hidden1")
-  
   # Apply dropout to avoid model overfitting on training data
-  with(tf$name_scope("dropout"), {
-    tf$summary$scalar("dropout_keep_probability", keep_prob)
-    dropped <- tf$nn$dropout(hidden1, keep_prob)
-  })
+  droppedf <- dropout(features, keep_prob, "dropout_input")
+  
+  hidden1 <- nn_layer(input_tensor = droppedf, features_dimension, hidden1_units, "hidden1")
+  # Apply dropout to avoid model overfitting on training data
+  dropped1 <- dropout(hidden1, keep_prob, "dropout_hidden1")
   
   # Hidden 2
-  hidden2 <- nn_layer(input_tensor = dropped, hidden1_units, hidden2_units, "hidden2")
+  hidden2 <- nn_layer(input_tensor = dropped1, hidden1_units, hidden2_units, "hidden2")
+  # Apply dropout to avoid model overfitting on training data
+  dropped2 <- dropout(hidden2, keep_prob, "dropout_hidden2")
   
   # Return linear regression output layer
-  nn_layer(input_tensor = hidden2, hidden2_units, OUTPUTS_DIMENSION, "linear", act = noop)
+  nn_layer(input_tensor = dropped2, hidden2_units, OUTPUTS_DIMENSION, "linear", act = noop)
 }
 
 # Calculates prediction error from the predictions and the ground truth
