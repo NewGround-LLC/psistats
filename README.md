@@ -66,7 +66,7 @@ Reducing the dimensionality of data corpus has number of advantages:
 2. It will reduce risk of overfitting and increase statistical power of results
 3. It will remove multicollinearity and redundancy in data corpus by grouping related features (variables) in single dimension
 4. It will significantly reduce required computational power and memory requirements
-5. And finaly it makes it easier to analyse data by hand over small set of dimensions as oposite to hundreds or thoushands of separate features
+5. And finally it makes it easier to analyze data by hand over small set of dimensions as opposite to hundreds or thousands of separate features
 
 ### Factor rotation analysis
 The factor rotation analysis techniques can be used to simplify SVD dimensions and increase their interpretability by mapping the original multidimensional space into a new, rotated space. Rotation approaches can be orthogonal (i.e., producing uncorrelated dimensions) or oblique (i.e., allowing for correlations between rotated dimensions).
