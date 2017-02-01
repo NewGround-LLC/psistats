@@ -16,15 +16,15 @@ OUTPUTS_DIMENSION <- 8
 # Build the psyhodemographic data model up to where it may be used for inference.
 #
 # Args:
-#   features: Users-Likes placeholder, from inputs().
+#   features: Users-Likes placeholder, from placeholder_inputs().
 #   hidden1_units: Size of the first hidden layer.
 #   hidden2_units: Size of the second hidden layer.
-#   dropout_keep_prob: the keep probability for dropout
+#   keep_prob: dropout probability placeholder, from placeholder_inputs().
 #
 # Returns:
 #   softmax_linear: Output tensor with the computed logits.
 #
-inference <- function(features, hidden1_units, hidden2_units, dropout_keep_prob) {
+inference <- function(features, hidden1_units, hidden2_units, keep_prob) {
   # We can't initialize these variables to 0 - the network will get stuck.
   weight_variable <- function(shape) {
     initial <- tf$truncated_normal(shape, stddev = 0.1 / sqrt(shape[[2]]))
@@ -90,8 +90,8 @@ inference <- function(features, hidden1_units, hidden2_units, dropout_keep_prob)
   
   # Apply dropout to avoid model overfitting on training data
   with(tf$name_scope("dropout"), {
-    tf$summary$scalar("dropout_keep_probability", dropout_keep_prob)
-    dropped <- tf$nn$dropout(hidden1, dropout_keep_prob)
+    tf$summary$scalar("dropout_keep_probability", keep_prob)
+    dropped <- tf$nn$dropout(hidden1, keep_prob)
   })
   
   # Hidden 2
