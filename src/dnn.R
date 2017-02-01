@@ -105,9 +105,10 @@ inference <- function(features, hidden1_units, hidden2_units) {
 #
 loss <- function(predicts, gt_labels) {
   with(tf$name_scope("MSE"), {
-    mse <- (predicts - gt_labels) ^ 2
+    err <- (predicts - gt_labels) ^ 2 # Squared Error
+    #err <- tf$abs(predicts - gt_labels) # Absolute Error
     with(tf$name_scope("total"), {
-      loss <- tf$reduce_mean(mse) # MSE
+      loss <- tf$reduce_mean(err) # Mean Squared(Absolute) Error
     })
     tf$summary$scalar("MSE", loss)
   })
