@@ -209,3 +209,28 @@ Evaluation loss: 3.35
 Step 50000: train loss = 0.54, test loss = 4.72 (duration: 0.0674829483032227)
 Learning rate: 0.0100, input_features = 512, hidden1 = 256, hidden2 = 64 (Adagrad) MSE
 =======================================================================
+Training Data Eval:
+Prediction accuracies:
+   gender : 54.78%
+      age : 75.93%
+political : 52.79%
+      ope : 10.84%
+      con : 13.67%
+      ext : 0.89%
+      agr : 4.50%
+      neu : 4.25%
+Evaluation loss: 3.20
+Test Data Eval:
+Prediction accuracies:
+   gender : 63.24%
+      age : 86.16%
+political : 54.69%
+      ope : 15.57%
+      con : 15.63%
+      ext : 4.66%
+      agr : 10.71%
+      neu : 11.63%
+Evaluation loss: 2.27
+Step 50000: train loss = 2.84, test loss = 3.95 (duration: 0.0498769283294678)
+Learning rate: 0.0500, dropout = 0.50, input_features = 512, hidden1 = 256, hidden2 = 64 (Adagrad) MSE
+=======================================================================
