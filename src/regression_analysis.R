@@ -59,6 +59,7 @@ cat("Prediction accuracies:\n", file = regr_pred_accuracy_file)
 accuracies <- list()
 for(var in rVars) {
   accuracies[[var]] = accuracy(users[,var], predictions[[var]])
+  cat(sprintf("%9s : %.2f%%\n", var, (accuracies[[var]][[1]] * 100.0)))
   cat(sprintf("%9s : %.2f%%\n", var, (accuracies[[var]][[1]] * 100.0)), file = regr_pred_accuracy_file, append = TRUE)
 }
 
