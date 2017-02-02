@@ -1,4 +1,5 @@
-# This is analysis based on Fully Connected Feed Forward Deep Learning Network build with TensorFlow framework.
+# This is analysis based on Fully Connected Feed Forward Deep Learning Network with dropout regularization 
+# build with TensorFlow framework.
 
 source('./src/config.R')
 source('./src/dnn.R')
