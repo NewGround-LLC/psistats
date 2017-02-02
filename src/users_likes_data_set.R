@@ -21,8 +21,6 @@ ul_read_data_set <- function(ul_file, users_file) {
   # prepare data
   folds <- sample(1:n_folds, size = nrow(users), replace = TRUE) # the data samples folds for cross-validation
   test <- folds == 1
-  pol_na <- which(is.na(users$political)) # substitute NA with marker
-  users$political[pol_na] <- 0.5
   
   # create train/test data sets
   train <- ULDataSet$new(users = users[!test,], users_likes = M[!test,])

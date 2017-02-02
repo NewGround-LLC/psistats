@@ -136,17 +136,6 @@ do_eval <- function(sess,
     labels <- rbind(labels, feed_dict$items()[[2]][[2]])
   }
   
-  # function to replace negative values for specified column with NA
-  neg_to_na <- function(x, col_index) {
-    neg_indx <- which(x[,col_index] == 0.5)
-    x[neg_indx, col_index] <- NA
-    x
-  }
-  
-  # adjust predictions and labels by replacing negative scores in Political column with NA
-  predictions <- neg_to_na(predictions, 3)
-  labels <- neg_to_na(labels, 3)
-  
   # show summary of results
   vars <- data_set$labels_names[-1]
   accuracies <- list()
