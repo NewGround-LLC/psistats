@@ -86,4 +86,4 @@ if (!dir.exists(out_intermediates_dir))
   dir.create(out_intermediates_dir, recursive = TRUE)
 
 save(M, file = ul_prdata_file)
-save(users_complete, file = users_prdata_file)
+save(users, file = users_prdata_file)
