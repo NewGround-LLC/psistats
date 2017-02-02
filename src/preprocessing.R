@@ -66,9 +66,24 @@ printULSummary(M)
 # Remove users deleted in M from users object
 users <- users[match(rownames(M), users$userid),]
 
+# The 'Political' dependent variable has multiple missing values. Do apply multiple imputation to the dependent variables
+# in order to substitude missed values with predicted
+print("Impute missed values in users")
+library(mice)
+users_imp <- users[,2:9] # omit userid
+users_imp[,3] <- factor(users_imp[,3]) # factorize Political
+imp <- mice(users_imp, m = 5, seed = 42, method = c("", "", "lda", "", "", "", "", ""))
+users_complete <- complete(imp) # fill in missing data
+users_complete[,3] <- as.integer(users_complete[,3]) - 1 # to get back "0", "1"
+users[,2:9] <- users_complete # assign to original data
+
+print("Imputation results summary")
+fit <- with(imp, lm(as.integer(political) ~ gender + age + ope + con + ext + agr + neu))
+round(summary(pool(fit)), 2)
+
 # save intermediates
 if (!dir.exists(out_intermediates_dir))
   dir.create(out_intermediates_dir, recursive = TRUE)
 
 save(M, file = ul_prdata_file)
-save(users, file = users_prdata_file)
+save(users_complete, file = users_prdata_file)
