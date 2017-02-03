@@ -12,9 +12,9 @@ library(optparse)
 
 # Basic model parameters as external flags.
 option_list <- list(
-  make_option(c("--learning_rate"), type="double", default=0.05,
+  make_option(c("--learning_rate"), type="double", default=0.01,
               help="Initial learning rate. [default %default]"),
-  make_option(c("--max_steps"), type="integer", default=50000L,
+  make_option(c("--max_steps"), type="integer", default=40000L,
               help="Number of steps to run trainer. [default %default]"),
   make_option(c("--hidden1"), type="integer", default=512L,
               help="Number of units in hidden layer 1. [default %default]"),
@@ -142,10 +142,6 @@ do_eval <- function(sess,
   accuracies <- list()
   cat("Prediction accuracies:\n")
   for(i in 1:OUTPUTS_DIMENSION) {
-    # fix predictions
-    nan_ind <- which(predictions[,i] == 'NaN')
-    predictions[,i][nan_ind] <- NA
-    
     # find accuracies per column
     accuracies[[i]] = accuracy(labels[,i], predictions[,i])
     # cat(sprintf("%9s : %.2f%%\n", vars[i], (accuracies[[i]][[1]] * 100.0)), file = regr_pred_accuracy_file, append = TRUE)
@@ -184,14 +180,9 @@ with(tf$Graph()$as_default(), {
   
   # Add to the Graph the Ops for training loss calculation.
   loss_op <- loss(predicts, placeholders$labels)
-  # Add to the Graph the Ops for test loss calculation.
-  loss_test_op <- loss_test(predicts, placeholders$labels)
   
   # Add to the Graph the Ops that calculate and apply gradients.
   train_op <- training(loss_op, FLAGS$learning_rate)
-  
-  # Add the Op to compare the predictions to the ground truth during evaluation.
-  # eval_correct <- evaluation(predicts, placeholders$labels)
   
   # Build the summary Tensor based on the TF collection of Summaries.
   summary <- tf$summary$merge_all()
@@ -208,7 +199,8 @@ with(tf$Graph()$as_default(), {
   # Instantiate a SummaryWriter to output summaries and the Graph.
   session_summary_dir <- format(Sys.time(), "%Y-%m-%d_%H-%M-%S")
   session_summary_dir <- sprintf("%s/%s", FLAGS$train_dir, session_summary_dir)
-  summary_writer <- tf$summary$FileWriter(session_summary_dir, sess$graph)
+  summary_writer_train <- tf$summary$FileWriter(sprintf("%s/%s", session_summary_dir, "train"), sess$graph)
+  summary_writer_test <- tf$summary$FileWriter(sprintf("%s/%s", session_summary_dir, "test"), sess$graph)
   
   # And then after everything is built:
   
@@ -232,31 +224,39 @@ with(tf$Graph()$as_default(), {
     # inspect the values of your Ops or variables, you may include them
     # in the list passed to sess.run() and the value tensors will be
     # returned in the tuple from the call.
-    values <- sess$run(list(train_op, loss_op), feed_dict = feed_dict)
-    train_loss_value <- values[[2]]
+    values <- sess$run(list(summary, train_op, loss_op), feed_dict = feed_dict)
+    summary_str_train <- values[[1]]
+    train_loss_value <- values[[3]]
     errors$train <- append(errors$train, train_loss_value)
-    
-    # Calculate loss over test data
-    test_feed_dict <- fill_feed_dict(data_set = data_sets$test,
-                                     features_pl = placeholders$features,
-                                     labels_pl = placeholders$labels,
-                                     keep_prob_pl = placeholders$keep_prob, 
-                                     train = FALSE)
-    test_loss_value <- sess$run(loss_test_op, feed_dict = test_feed_dict)
-    errors$test <- append(errors$test, test_loss_value)
-    
+
     # The duration of train step
     duration <- Sys.time() - start_time
     
     # Write the summaries and print an overview fairly often.
     if (step %% 100 == 0) {
+      # Update the train events file.
+      summary_writer_train$add_summary(summary_str_train, step)
+
+      # Calculate loss over test data
+      test_feed_dict <- fill_feed_dict(data_set = data_sets$test,
+                                       features_pl = placeholders$features,
+                                       labels_pl = placeholders$labels,
+                                       keep_prob_pl = placeholders$keep_prob, 
+                                       train = FALSE)
+      test_values <- sess$run(list(summary, loss_op), feed_dict = test_feed_dict)
+      summary_str_test <- test_values[[1]]
+      test_loss_value <- test_values[[2]]
+      errors$test <- append(errors$test, test_loss_value)
+      # Update the test events file
+      summary_writer_test$add_summary(summary_str_test, step)
+      
       # Print status to stdout.
       cat(sprintf('Step %d: train loss = %.2f, test loss = %.2f (duration: %s)\n',
                   step, train_loss_value, test_loss_value, duration))
-      # Update the events file.
-      summary_str <- sess$run(summary, feed_dict = feed_dict)
-      summary_writer$add_summary(summary_str, step)
-      summary_writer$flush()
+      
+      # Flush summaries
+      summary_writer_train$flush()
+      summary_writer_test$flush()
     }
     
     # Save a checkpoint and evaluate the model periodically.
@@ -285,11 +285,11 @@ with(tf$Graph()$as_default(), {
   }
   
   # Final details about method
-  cat(sprintf("Learning rate: %.4f, dropout = %.2f, input_features = %d, hidden1 = %d, hidden2 = %d",
+  cat(sprintf("Learning rate: %.4f, dropout = %.2f, input_features = %d, hidden1 = %d, hidden2 = %d\n",
               FLAGS$learning_rate, FLAGS$dropout, data_sets$features_dimension, FLAGS$hidden1, FLAGS$hidden2))
   train_error <- mean(errors$train)
   test_error <- mean(errors$test)
-  cat(sprintf("Train/test errors: %.4f / %.4f", train_error, test_error))
+  cat(sprintf("Train/test errors: %.4f / %.4f, train optimizer: %s", train_error, test_error, train_op$name))
 })
 
 
