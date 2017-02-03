@@ -25,7 +25,7 @@ OUTPUTS_DIMENSION <- 8
 #   softmax_linear: Output tensor with the computed logits.
 #
 inference <- function(features, hidden1_units, hidden2_units, keep_prob) {
-  # We can't initialize these variables to 0 - the network will get stuck.
+  # We can't initialize these variables to 0 - the network will get stuck since we use ReLU.
   weight_variable <- function(shape) {
     initial <- tf$truncated_normal(shape, stddev = 0.1 / sqrt(shape[[2]]))
     tf$Variable(initial)
@@ -95,10 +95,7 @@ inference <- function(features, hidden1_units, hidden2_units, keep_prob) {
   
   # Hidden 1
   features_dimension <- features$get_shape()$as_list()[2]
-  # Apply dropout to avoid model overfitting on training data
-  droppedf <- dropout(features, keep_prob, "dropout_input")
-  
-  hidden1 <- nn_layer(input_tensor = droppedf, features_dimension, hidden1_units, "hidden1")
+  hidden1 <- nn_layer(input_tensor = features, features_dimension, hidden1_units, "hidden1")
   # Apply dropout to avoid model overfitting on training data
   dropped1 <- dropout(hidden1, keep_prob, "dropout_hidden1")
   
