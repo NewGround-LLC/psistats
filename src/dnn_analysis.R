@@ -203,7 +203,9 @@ with(tf$Graph()$as_default(), {
   sess <- tf$Session()
   
   # Instantiate a SummaryWriter to output summaries and the Graph.
-  summary_writer <- tf$summary$FileWriter(FLAGS$train_dir, sess$graph)
+  session_summary_dir <- format(Sys.time(), "%Y-%m-%d_%H-%M-%S")
+  train_dir <- sprintf("%s/%s", train_dir, session_summary_dir)
+  summary_writer <- tf$summary$FileWriter(train_dir, sess$graph)
   
   # And then after everything is built:
   
