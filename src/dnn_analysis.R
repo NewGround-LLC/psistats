@@ -18,7 +18,7 @@ option_list <- list(
               help="Number of steps to run trainer. [default %default]"),
   make_option(c("--hidden1"), type="integer", default=512L,
               help="Number of units in hidden layer 1. [default %default]"),
-  make_option(c("--hidden2"), type="integer", default=346L,
+  make_option(c("--hidden2"), type="integer", default=512L,
               help="Number of units in hidden layer 2. [default %default]"),
   make_option(c("--batch_size"), type="integer", default=100L,
               help="Batch size. Must divide evenly into the dataset sizes. [default %default]"),
