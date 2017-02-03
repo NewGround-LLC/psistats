@@ -234,3 +234,131 @@ Evaluation loss: 2.27
 Step 50000: train loss = 2.84, test loss = 3.95 (duration: 0.0498769283294678)
 Learning rate: 0.0500, dropout = 0.50, input_features = 512, hidden1 = 256, hidden2 = 64 (Adagrad) MSE
 =======================================================================
+Training Data Eval:
+Prediction accuracies:
+   gender : 51.21%
+      age : 89.37%
+political : 51.34%
+      ope : 6.78%
+      con : 12.51%
+      ext : 1.76%
+      agr : 5.46%
+      neu : 4.54%
+Evaluation loss: 1.90
+Test Data Eval:
+Prediction accuracies:
+   gender : 45.06%
+      age : 83.99%
+political : 53.28%
+      ope : 8.96%
+      con : 16.24%
+      ext : 5.49%
+      agr : 10.75%
+      neu : 9.90%
+Evaluation loss: 2.35
+Step 50000: train loss = 1.81, test loss = 4.48 (duration: 0.0458729267120361)
+Learning rate: 0.0500, dropout = 0.50, input_features = 512, hidden1 = 256, hidden2 = 64 (Adagrad) MSE
+=======================================================================
+Training Data Eval:
+Prediction accuracies:
+   gender : 56.13%
+      age : 86.08%
+political : 52.86%
+      ope : 14.46%
+      con : 16.65%
+      ext : 3.19%
+      agr : 5.64%
+      neu : 6.22%
+Evaluation loss: 2.13
+Test Data Eval:
+Prediction accuracies:
+   gender : 62.68%
+      age : 84.31%
+political : 55.83%
+      ope : 17.88%
+      con : 15.27%
+      ext : 10.33%
+      agr : 8.92%
+      neu : 11.82%
+Evaluation loss: 2.34
+Step 50000: train loss = 1.70, test loss = 4.26 (duration: 0.0466821193695068)
+Learning rate: 0.0500, dropout = 0.50, input_features = 512, hidden1 = 64, hidden2 = 256 (Adagrad) MSE
+=======================================================================
+Training Data Eval:
+Prediction accuracies:
+   gender : 60.39%
+      age : 87.20%
+political : 55.57%
+      ope : 18.72%
+      con : 17.28%
+      ext : 8.65%
+      agr : 6.09%
+      neu : 10.81%
+Evaluation loss: 2.00
+Test Data Eval:
+Prediction accuracies:
+   gender : 67.88%
+      age : 84.35%
+political : 57.45%
+      ope : 24.83%
+      con : 13.50%
+      ext : 13.05%
+      agr : 11.08%
+      neu : 19.20%
+Evaluation loss: 2.22
+Step 40000: train loss = 1.46, test loss = 1.60 (duration: 0.0543570518493652)
+Learning rate: 0.0500, dropout = 0.50, input_features = 512, hidden1 = 512, hidden2 = 346
+Train/test errors: 2.3310 / 2.2975 (Adagrad) MSE
+=======================================================================
+Training Data Eval:
+Prediction accuracies:
+   gender : 87.95%
+      age : 93.41%
+political : 66.84%
+      ope : 43.66%
+      con : 26.63%
+      ext : 29.90%
+      agr : 23.92%
+      neu : 34.37%
+Evaluation loss: 1.30
+Test Data Eval:
+Prediction accuracies:
+   gender : 94.25%
+      age : 78.97%
+political : 68.25%
+      ope : 50.81%
+      con : 26.47%
+      ext : 30.65%
+      agr : 25.06%
+      neu : 36.24%
+Evaluation loss: 2.38
+Step 40000: train loss = 1.10, test loss = 2.29 (duration: 0.0569498538970947)
+Learning rate: 0.0100, dropout = 0.50, input_features = 512, hidden1 = 512, hidden2 = 346
+Mean train/test errors: 1.7404 / 2.4530, train optimizer: train/Adagrad
+=======================================================================
+Training Data Eval:
+Prediction accuracies:
+   gender : 77.88%
+      age : 92.25%
+political : 64.22%
+      ope : 35.67%
+      con : 23.53%
+      ext : 21.94%
+      agr : 17.57%
+      neu : 30.40%
+Evaluation loss: 1.48
+Test Data Eval:
+Prediction accuracies:
+   gender : 90.68%
+      age : 80.08%
+political : 66.60%
+      ope : 44.54%
+      con : 24.96%
+      ext : 23.48%
+      agr : 21.31%
+      neu : 36.41%
+Evaluation loss: 2.32
+Step 40000: train loss = 1.70, test loss = 2.37 (duration: 0.0431160926818848)
+Learning rate: 0.0100, dropout = 0.50, input_features = 512, hidden1 = 512, hidden2 = 256
+Mean train/test errors: 1.9466 / 2.4434, train optimizer: train/Adagrad
+=======================================================================
