@@ -12,13 +12,13 @@ library(optparse)
 
 # Basic model parameters as external flags.
 option_list <- list(
-  make_option(c("--learning_rate"), type="double", default=0.01,
+  make_option(c("--learning_rate"), type="double", default=0.05,
               help="Initial learning rate. [default %default]"),
   make_option(c("--max_steps"), type="integer", default=40000L,
               help="Number of steps to run trainer. [default %default]"),
   make_option(c("--hidden1"), type="integer", default=512L,
               help="Number of units in hidden layer 1. [default %default]"),
-  make_option(c("--hidden2"), type="integer", default=346L,
+  make_option(c("--hidden2"), type="integer", default=256L,
               help="Number of units in hidden layer 2. [default %default]"),
   make_option(c("--batch_size"), type="integer", default=100L,
               help="Batch size. Must divide evenly into the dataset sizes. [default %default]"),
@@ -289,7 +289,7 @@ with(tf$Graph()$as_default(), {
               FLAGS$learning_rate, FLAGS$dropout, data_sets$features_dimension, FLAGS$hidden1, FLAGS$hidden2))
   train_error <- mean(errors$train)
   test_error <- mean(errors$test)
-  cat(sprintf("Train/test errors: %.4f / %.4f, train optimizer: %s", train_error, test_error, train_op$name))
+  cat(sprintf("Mean train/test errors: %.4f / %.4f, train optimizer: %s", train_error, test_error, train_op$name))
 })
 
 
