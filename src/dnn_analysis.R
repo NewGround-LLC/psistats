@@ -16,9 +16,9 @@ option_list <- list(
               help="Initial learning rate. [default %default]"),
   make_option(c("--max_steps"), type="integer", default=50000L,
               help="Number of steps to run trainer. [default %default]"),
-  make_option(c("--hidden1"), type="integer", default=256L,
+  make_option(c("--hidden1"), type="integer", default=512L,
               help="Number of units in hidden layer 1. [default %default]"),
-  make_option(c("--hidden2"), type="integer", default=64L,
+  make_option(c("--hidden2"), type="integer", default=346L,
               help="Number of units in hidden layer 2. [default %default]"),
   make_option(c("--batch_size"), type="integer", default=100L,
               help="Batch size. Must divide evenly into the dataset sizes. [default %default]"),
@@ -170,6 +170,9 @@ assertthat::assert_that(file.exists(ul_reduced_prdata_file))
 # Get sets of users-likes and users traits for train and test
 data_sets <- ul_read_data_set(ul_file = ul_reduced_prdata_file, users_file = users_prdata_file)
 
+# List to store train and test errors per step
+errors <- list(train = c(), test = c())
+
 # Tell TensorFlow that the model will be built into the default Graph.
 with(tf$Graph()$as_default(), {
   
@@ -204,8 +207,8 @@ with(tf$Graph()$as_default(), {
   
   # Instantiate a SummaryWriter to output summaries and the Graph.
   session_summary_dir <- format(Sys.time(), "%Y-%m-%d_%H-%M-%S")
-  train_dir <- sprintf("%s/%s", train_dir, session_summary_dir)
-  summary_writer <- tf$summary$FileWriter(train_dir, sess$graph)
+  session_summary_dir <- sprintf("%s/%s", FLAGS$train_dir, session_summary_dir)
+  summary_writer <- tf$summary$FileWriter(session_summary_dir, sess$graph)
   
   # And then after everything is built:
   
@@ -231,6 +234,7 @@ with(tf$Graph()$as_default(), {
     # returned in the tuple from the call.
     values <- sess$run(list(train_op, loss_op), feed_dict = feed_dict)
     train_loss_value <- values[[2]]
+    errors$train <- append(errors$train, train_loss_value)
     
     # Calculate loss over test data
     test_feed_dict <- fill_feed_dict(data_set = data_sets$test,
@@ -239,6 +243,7 @@ with(tf$Graph()$as_default(), {
                                      keep_prob_pl = placeholders$keep_prob, 
                                      train = FALSE)
     test_loss_value <- sess$run(loss_test_op, feed_dict = test_feed_dict)
+    errors$test <- append(errors$test, test_loss_value)
     
     # The duration of train step
     duration <- Sys.time() - start_time
@@ -256,7 +261,7 @@ with(tf$Graph()$as_default(), {
     
     # Save a checkpoint and evaluate the model periodically.
     if ((step + 1) %% 1000 == 0 || (step + 1) == FLAGS$max_steps) {
-      checkpoint_file <- file.path(FLAGS$train_dir, 'checkpoint')
+      checkpoint_file <- file.path(session_summary_dir, 'checkpoint')
       saver$save(sess, checkpoint_file, global_step = step)
       
       # Evaluate against the training set.
@@ -282,6 +287,9 @@ with(tf$Graph()$as_default(), {
   # Final details about method
   cat(sprintf("Learning rate: %.4f, dropout = %.2f, input_features = %d, hidden1 = %d, hidden2 = %d",
               FLAGS$learning_rate, FLAGS$dropout, data_sets$features_dimension, FLAGS$hidden1, FLAGS$hidden2))
+  train_error <- mean(errors$train)
+  test_error <- mean(errors$test)
+  cat(sprintf("Train/test errors: %.4f / %.4f", train_error, test_error))
 })
 
 
