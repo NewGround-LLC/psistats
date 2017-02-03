@@ -121,6 +121,7 @@ prediction_error <- function(predicts, gt_labels) {
   #err <- tf$abs(predicts - gt_labels) # Absolute Error
   with(tf$name_scope("total"), {
     loss <- tf$reduce_mean(err) # Mean Squared(Absolute) Error
+    tf$summary$scalar("loss", loss)
   })
   loss
 }
@@ -135,26 +136,8 @@ prediction_error <- function(predicts, gt_labels) {
 #   loss: Loss tensor of type float.
 #
 loss <- function(predicts, gt_labels) {
-  with(tf$name_scope("Train_Loss"), {
+  with(tf$name_scope("Loss"), {
     loss <- prediction_error(predicts, gt_labels)
-    tf$summary$scalar("loss", loss)
-  })
-  loss
-}
-
-# Calculates the test loss from the predictions and the ground truth
-#
-# Args:
-#   predicts: predictions tensor, float - [batch_size, OUTPUTS_DIMENSION].
-#   gt_labels: the ground truth labels tensor, float - [batch_size, OUTPUTS_DIMENSION].
-#
-# Returns:
-#   loss: Loss tensor of type float.
-#
-loss_test <- function(predicts, gt_labels) {
-  with(tf$name_scope("Test_Loss"), {
-    loss <- prediction_error(predicts, gt_labels)
-    tf$summary$scalar("loss", loss)
   })
   loss
 }
@@ -179,6 +162,8 @@ training <- function(loss, learning_rate) {
   with(tf$name_scope("train"), {
     # Add a scalar summary for the snapshot loss.
     tf$summary$scalar(loss$op$name, loss)
+    # Add learning rate to summary to comapare with different learning rates
+    tf$summary$scalar("learning_rate", learning_rate)
     
     # Create the gradient descent optimizer with the given learning rate.
     #optimizer <- tf$train$GradientDescentOptimizer(learning_rate)
