@@ -12,7 +12,7 @@ library(optparse)
 
 # Basic model parameters as external flags.
 option_list <- list(
-  make_option(c("--learning_rate"), type="double", default=0.01,
+  make_option(c("--learning_rate"), type="double", default=0.03,
               help="Initial learning rate. [default %default]"),
   make_option(c("--max_steps"), type="integer", default=40000L,
               help="Number of steps to run trainer. [default %default]"),
@@ -96,11 +96,15 @@ fill_feed_dict <- function(data_set, placeholders, train) {
   } else {
     keep_prob = 1.0 # No dropout during testing
   }
+  features_pl = placeholders$features
+  labels_pl = placeholders$labels
+  keep_prob_pl = placeholders$keep_prob
+  learning_rate_pl = placeholders$learning_rate
   dict(
-    placeholders$features = t_ul,
-    placeholders$labels = t_users,
-    placeholders$keep_prob = keep_prob, 
-    placeholders$learning_rate = learning_rate
+    features_pl = t_ul,
+    labels_pl = t_users,
+    keep_prob_pl = keep_prob, 
+    learning_rate_pl = learning_rate
   )
 }
 
@@ -209,7 +213,7 @@ with(tf$Graph()$as_default(), {
     start_time <- Sys.time()
     
     # descrease learning rate every 10 thousands
-    if (i %% 10000 == 0) {
+    if (step %% 10000 == 0) {
       learning_rate <- learning_rate * 0.5
     }
     
@@ -280,8 +284,8 @@ with(tf$Graph()$as_default(), {
   }
   
   # Final details about method
-  cat(sprintf("Learning rate: %.4f, dropout = %.2f, input_features = %d, hidden1 = %d, hidden2 = %d\n",
-              learning_rate, FLAGS$dropout, data_sets$features_dimension, FLAGS$hidden1, FLAGS$hidden2))
+  cat(sprintf("Learning rate start/final: %.4f/%.4f, dropout = %.2f, input_features = %d, hidden1 = %d, hidden2 = %d\n",
+              FLAGS$learning_rate, learning_rate, FLAGS$dropout, data_sets$features_dimension, FLAGS$hidden1, FLAGS$hidden2))
   train_error <- mean(errors$train)
   test_error <- mean(errors$test)
   cat(sprintf("Mean train/test errors: %.4f / %.4f, train optimizer: %s", train_error, test_error, train_op$name))
