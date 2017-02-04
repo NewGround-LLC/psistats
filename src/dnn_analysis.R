@@ -14,7 +14,7 @@ library(optparse)
 option_list <- list(
   make_option(c("--learning_rate"), type="double", default=0.03,
               help="Initial learning rate. [default %default]"),
-  make_option(c("--max_steps"), type="integer", default=40000L,
+  make_option(c("--max_steps"), type="integer", default=60000L,
               help="Number of steps to run trainer. [default %default]"),
   make_option(c("--hidden1"), type="integer", default=512L,
               help="Number of units in hidden layer 1. [default %default]"),
@@ -27,7 +27,9 @@ option_list <- list(
   make_option(c("--dropout"), type="double", default=0.5,
               help="Keep probability for training dropout. [default %default]"),
   make_option(c("--lr_anneal"), type="logical", default=TRUE,
-              help="Whether learning rate should be annealed by epochs. [default %default]")
+              help="Whether learning rate should be annealed by epochs. [default %default]"),
+  make_option(c("--lr_anneal_step"), type="integer", default=10000,
+              help="The epoch's step to change learning rate. [default %default]")
 )
 parser <- OptionParser(usage = "%prog [options] file", option_list = option_list, add_help_option = TRUE, 
                        description = "This is Fully Connected Feed Forward Deep Learning Network model around Tensorflow")
@@ -215,9 +217,13 @@ with(tf$Graph()$as_default(), {
     start_time <- Sys.time()
     
     # descrease learning rate every N epochs
-    if (FLAGS$lr_anneal && (step %% 10000 == 0)) {
-      learning_rate <- learning_rate * 0.5
+    if (FLAGS$lr_anneal && (step %% FLAGS$lr_anneal_step == 0)) {
+      learning_rate <- learning_rate * 0.6
     }
+    
+    # Applies exponential decay to the learning rate.
+    global_step <- tf$train$global_step(sess, train_op$name)
+    # learning_rate = tf$train$exponential_decay(FLAGS$learning_rate, global_step,FLAGS$lr_anneal_step, 0.96, staircase=True)
     
     
     # Fill a feed dictionary with the actual set of users-likes and users
