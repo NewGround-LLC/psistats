@@ -25,7 +25,9 @@ option_list <- list(
   make_option(c("--train_dir"), type="character", default=sprintf("%s/train_data", out_dir),
               help="Directory to put the training data. [default %default]"),
   make_option(c("--dropout"), type="double", default=0.5,
-              help="Keep probability for training dropout. [default %default]")
+              help="Keep probability for training dropout. [default %default]"),
+  make_option(c("--lr_anneal"), type="logical", default=TRUE,
+              help="Whether learning rate should be annealed by epochs. [default %default]")
 )
 parser <- OptionParser(usage = "%prog [options] file", option_list = option_list, add_help_option = TRUE, 
                        description = "This is Fully Connected Feed Forward Deep Learning Network model around Tensorflow")
@@ -183,7 +185,7 @@ with(tf$Graph()$as_default(), {
   loss_op <- loss(predicts, placeholders$labels)
   
   # Add to the Graph the Ops that calculate and apply gradients.
-  train_op <- training(loss_op, FLAGS$learning_rate)
+  train_op <- training(loss_op, placeholders$learning_rate)
   
   # Build the summary Tensor based on the TF collection of Summaries.
   summary <- tf$summary$merge_all()
@@ -212,8 +214,8 @@ with(tf$Graph()$as_default(), {
   for (step in 1:FLAGS$max_steps) {
     start_time <- Sys.time()
     
-    # descrease learning rate every 10 thousands
-    if (step %% 10000 == 0) {
+    # descrease learning rate every N epochs
+    if (FLAGS$lr_anneal && (step %% 10000 == 0)) {
       learning_rate <- learning_rate * 0.5
     }
     
