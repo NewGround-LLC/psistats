@@ -11,7 +11,7 @@
 library(tensorflow)
 
 # The number of output dimensions
-OUTPUTS_DIMENSION <- 8
+OUTPUTS_DIMENSION <- 8L
 
 # Build the psyhodemographic data model up to where it may be used for inference.
 #
@@ -105,7 +105,9 @@ inference <- function(features, hidden1_units, hidden2_units, keep_prob) {
   dropped2 <- dropout(hidden2, keep_prob, "dropout_hidden2")
   
   # Return linear regression output layer
-  nn_layer(input_tensor = dropped2, hidden2_units, OUTPUTS_DIMENSION, "linear", act = noop)
+  #nn_layer(input_tensor = dropped2, hidden2_units, OUTPUTS_DIMENSION, "linear", act = noop)
+  
+  out = tf$contrib$layers$fully_connected(dropped2, num_outputs = OUTPUTS_DIMENSION)
 }
 
 # Calculates prediction error from the predictions and the ground truth
@@ -117,8 +119,8 @@ inference <- function(features, hidden1_units, hidden2_units, keep_prob) {
 # Returns:
 #   loss: prediction error tensor of type float.
 prediction_error <- function(predicts, gt_labels) {
-  err <- (predicts - gt_labels) ^ 2 # Squared Error
-  #err <- tf$abs(predicts - gt_labels) # Absolute Error
+  #err <- (predicts - gt_labels) ^ 2 # Squared Error
+  err <- tf$abs(predicts - gt_labels) # Absolute Error
   with(tf$name_scope("total"), {
     loss <- tf$reduce_mean(err) # Mean Squared(Absolute) Error
     tf$summary$scalar("loss", loss)
