@@ -14,7 +14,7 @@ library(optparse)
 option_list <- list(
   make_option(c("--learning_rate"), type="double", default=0.03,
               help="Initial learning rate. [default %default]"),
-  make_option(c("--max_steps"), type="integer", default=60000L,
+  make_option(c("--max_steps"), type="integer", default=40000L,
               help="Number of steps to run trainer. [default %default]"),
   make_option(c("--hidden1"), type="integer", default=512L,
               help="Number of units in hidden layer 1. [default %default]"),
@@ -26,8 +26,6 @@ option_list <- list(
               help="Directory to put the training data. [default %default]"),
   make_option(c("--dropout"), type="double", default=0.5,
               help="Keep probability for training dropout. [default %default]"),
-  make_option(c("--lr_anneal"), type="logical", default=TRUE,
-              help="Whether learning rate should be annealed by epochs. [default %default]"),
   make_option(c("--lr_anneal_step"), type="integer", default=10000,
               help="The epoch's step to change learning rate. [default %default]")
 )
@@ -54,6 +52,7 @@ learning_rate <- FLAGS$learning_rate
 # Returns:
 #   placeholders$features: the Users-Likes placeholder.
 #   placeholders$labels: the user traits placeholder.
+#   placeholders$keep_prob: the dropout keep probability
 #
 placeholder_inputs <- function(batch_size, features_dimensions) {
   
@@ -63,10 +62,9 @@ placeholder_inputs <- function(batch_size, features_dimensions) {
   features <- tf$placeholder(tf$float32, shape(batch_size, features_dimensions))
   user_traits <- tf$placeholder(tf$float32, shape(batch_size, OUTPUTS_DIMENSION))
   keep_prob <- tf$placeholder(tf$float32)
-  l_rate <- tf$placeholder(tf$float32)
   
   # return both placeholders
-  list(features = features, labels = user_traits, keep_prob = keep_prob, learning_rate = l_rate)
+  list(features = features, labels = user_traits, keep_prob = keep_prob)
 }
 
 # Fills the feed_dict for training the given step.
@@ -103,12 +101,10 @@ fill_feed_dict <- function(data_set, placeholders, train) {
   features_pl = placeholders$features
   labels_pl = placeholders$labels
   keep_prob_pl = placeholders$keep_prob
-  learning_rate_pl = placeholders$learning_rate
   dict(
     features_pl = t_ul,
     labels_pl = t_users,
-    keep_prob_pl = keep_prob, 
-    learning_rate_pl = learning_rate
+    keep_prob_pl = keep_prob
   )
 }
 
@@ -176,7 +172,6 @@ errors <- list(train = c(), test = c())
 
 # Tell TensorFlow that the model will be built into the default Graph.
 with(tf$Graph()$as_default(), {
-  
   # Generate placeholders for the users-likes and users
   placeholders <- placeholder_inputs(FLAGS$batch_size, data_sets$features_dimension)
   
@@ -187,7 +182,7 @@ with(tf$Graph()$as_default(), {
   loss_op <- loss(predicts, placeholders$labels)
   
   # Add to the Graph the Ops that calculate and apply gradients.
-  train_op <- training(loss_op, placeholders$learning_rate)
+  train_op <- training(loss_op, FLAGS$learning_rate, FLAGS$lr_anneal_step)
   
   # Build the summary Tensor based on the TF collection of Summaries.
   summary <- tf$summary$merge_all()
@@ -215,17 +210,7 @@ with(tf$Graph()$as_default(), {
   # Start the training loop.
   for (step in 1:FLAGS$max_steps) {
     start_time <- Sys.time()
-    
-    # descrease learning rate every N epochs
-    if (FLAGS$lr_anneal && (step %% FLAGS$lr_anneal_step == 0)) {
-      learning_rate <- learning_rate * 0.6
-    }
-    
-    # Applies exponential decay to the learning rate.
-    global_step <- tf$train$global_step(sess, train_op$name)
-    # learning_rate = tf$train$exponential_decay(FLAGS$learning_rate, global_step,FLAGS$lr_anneal_step, 0.96, staircase=True)
-    
-    
+
     # Fill a feed dictionary with the actual set of users-likes and users
     # for this particular training step.
     feed_dict <- fill_feed_dict(data_set = data_sets$train,
@@ -240,7 +225,7 @@ with(tf$Graph()$as_default(), {
     summary_str_train <- values[[1]]
     train_loss_value <- values[[3]]
     errors$train <- append(errors$train, train_loss_value)
-
+    
     # The duration of train step
     duration <- Sys.time() - start_time
     
@@ -292,8 +277,8 @@ with(tf$Graph()$as_default(), {
   }
   
   # Final details about method
-  cat(sprintf("Learning rate start/final: %.4f/%.4f, dropout = %.2f, input_features = %d, hidden1 = %d, hidden2 = %d\n",
-              FLAGS$learning_rate, learning_rate, FLAGS$dropout, data_sets$features_dimension, FLAGS$hidden1, FLAGS$hidden2))
+  cat(sprintf("Learning rate start: %.4f, dropout = %.2f, input_features = %d, hidden1 = %d, hidden2 = %d\n",
+              FLAGS$learning_rate, FLAGS$dropout, data_sets$features_dimension, FLAGS$hidden1, FLAGS$hidden2))
   train_error <- mean(errors$train)
   test_error <- mean(errors$test)
   cat(sprintf("Mean train/test errors: %.4f / %.4f, train optimizer: %s", train_error, test_error, train_op$name))
