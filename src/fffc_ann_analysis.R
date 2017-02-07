@@ -1,4 +1,4 @@
-# This is analysis based on Fully Connected Feed Forward Learning Network with dropout regularization 
+# This is analysis based on fast forward fully connected artificial neural network with dropout regularization 
 # build with TensorFlow framework.
 
 source('./src/config.R')
