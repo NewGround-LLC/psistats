@@ -12,9 +12,9 @@ library(optparse)
 
 # Basic model parameters as external flags.
 option_list <- list(
-  make_option(c("--learning_rate"), type="double", default=0.01,
+  make_option(c("--learning_rate"), type="double", default=0.03,
               help="Initial learning rate. [default %default]"),
-  make_option(c("--max_steps"), type="integer", default=40000L,
+  make_option(c("--max_steps"), type="integer", default=60000L,
               help="Number of steps to run trainer. [default %default]"),
   make_option(c("--hidden1"), type="integer", default=512L,
               help="Number of units in hidden layer 1. [default %default]"),
@@ -25,7 +25,11 @@ option_list <- list(
   make_option(c("--train_dir"), type="character", default=sprintf("%s/train_data", out_dir),
               help="Directory to put the training data. [default %default]"),
   make_option(c("--dropout"), type="double", default=0.5,
-              help="Keep probability for training dropout. [default %default]")
+              help="Keep probability for training dropout. [default %default]"),
+  make_option(c("--lr_anneal"), type="logical", default=TRUE,
+              help="Whether learning rate should be annealed by epochs. [default %default]"),
+  make_option(c("--lr_anneal_step"), type="integer", default=10000,
+              help="The epoch's step to change learning rate. [default %default]")
 )
 parser <- OptionParser(usage = "%prog [options] file", option_list = option_list, add_help_option = TRUE, 
                        description = "This is Fully Connected Feed Forward Deep Learning Network model around Tensorflow")
@@ -34,6 +38,9 @@ FLAGS <- args$options
 
 # set random number generator's seed - so results will be stable from run to run
 set.seed(44)
+
+# the statring learning rate
+learning_rate <- FLAGS$learning_rate
 
 
 # Generate placeholder variables to represent the input tensors.
@@ -56,9 +63,10 @@ placeholder_inputs <- function(batch_size, features_dimensions) {
   features <- tf$placeholder(tf$float32, shape(batch_size, features_dimensions))
   user_traits <- tf$placeholder(tf$float32, shape(batch_size, OUTPUTS_DIMENSION))
   keep_prob <- tf$placeholder(tf$float32)
+  l_rate <- tf$placeholder(tf$float32)
   
   # return both placeholders
-  list(features = features, labels = user_traits, keep_prob = keep_prob)
+  list(features = features, labels = user_traits, keep_prob = keep_prob, learning_rate = l_rate)
 }
 
 # Fills the feed_dict for training the given step.
@@ -71,15 +79,13 @@ placeholder_inputs <- function(batch_size, features_dimensions) {
 #
 # Args:
 #   data_set: The set of user likes and user traits, from ul.read_data_sets()
-#   features_pl: the Users-Likes placeholder, from placeholder_inputs().
-#   labels_pl: the users traits placeholder, from placeholder_inputs().
-#   keep_prob_pl: the dropout keep probability placeholder, from placeholder_inputs().
+#   placeholders: The list of parameters and inputs placeholders, from placeholder_inputs().
 #   train: the flag to indicate if train data set generated
 #
 # Returns:
 #   feed_dict: The feed dictionary mapping from placeholders to values.
 #
-fill_feed_dict <- function(data_set, features_pl, labels_pl, keep_prob_pl, train) {
+fill_feed_dict <- function(data_set, placeholders, train) {
   # Create the feed_dict for the placeholders filled with the next
   # `batch size` examples.
   batch <- data_set$next_batch(FLAGS$batch_size)
@@ -94,10 +100,15 @@ fill_feed_dict <- function(data_set, features_pl, labels_pl, keep_prob_pl, train
   } else {
     keep_prob = 1.0 # No dropout during testing
   }
+  features_pl = placeholders$features
+  labels_pl = placeholders$labels
+  keep_prob_pl = placeholders$keep_prob
+  learning_rate_pl = placeholders$learning_rate
   dict(
     features_pl = t_ul,
     labels_pl = t_users,
-    keep_prob_pl = keep_prob
+    keep_prob_pl = keep_prob, 
+    learning_rate_pl = learning_rate
   )
 }
 
@@ -106,18 +117,14 @@ fill_feed_dict <- function(data_set, features_pl, labels_pl, keep_prob_pl, train
 # Args:
 #   sess: The session in which the model has been trained.
 #   predict_op: The Tensor that returns model predictions.
-#   features_placeholder: The features placeholder.
-#   labels_placeholder: The labels placeholder.
-#   keep_prob_placeholder: the dropout keep probability placeholder.
+#   placeholders: The list of parameters and inputs placeholders, from placeholder_inputs().
 #   data_set: The set of features and labels to evaluate,
 #             from input_data.read_data_sets().
 #   train: if set to TRUE then evaluation for train data
 #
 do_eval <- function(sess,
                     predict_op,
-                    features_placeholder,
-                    labels_placeholder,
-                    keep_prob_placeholder,
+                    placeholders,
                     data_set, train) {
   # And run one epoch of eval.
   steps_per_epoch <- data_set$num_examples %/% FLAGS$batch_size
@@ -128,10 +135,8 @@ do_eval <- function(sess,
   # Try to go over all data examples (approximatelly, at least taking the same number of batches as during training) 
   # and evaluate accuracy per step (batch)
   for (step in 1:steps_per_epoch) {
-    feed_dict <- fill_feed_dict(data_set,
-                                features_placeholder,
-                                labels_placeholder,
-                                keep_prob_placeholder, train)
+    feed_dict <- fill_feed_dict(data_set, placeholders, train)
+    # Do predictions
     predicted <- sess$run(predict_op, feed_dict = feed_dict)
     predictions <- rbind(predictions, predicted)
     labels <- rbind(labels, feed_dict$items()[[2]][[2]])
@@ -182,7 +187,7 @@ with(tf$Graph()$as_default(), {
   loss_op <- loss(predicts, placeholders$labels)
   
   # Add to the Graph the Ops that calculate and apply gradients.
-  train_op <- training(loss_op, FLAGS$learning_rate)
+  train_op <- training(loss_op, placeholders$learning_rate)
   
   # Build the summary Tensor based on the TF collection of Summaries.
   summary <- tf$summary$merge_all()
@@ -211,13 +216,20 @@ with(tf$Graph()$as_default(), {
   for (step in 1:FLAGS$max_steps) {
     start_time <- Sys.time()
     
+    # descrease learning rate every N epochs
+    if (FLAGS$lr_anneal && (step %% FLAGS$lr_anneal_step == 0)) {
+      learning_rate <- learning_rate * 0.6
+    }
+    
+    # Applies exponential decay to the learning rate.
+    global_step <- tf$train$global_step(sess, train_op$name)
+    # learning_rate = tf$train$exponential_decay(FLAGS$learning_rate, global_step,FLAGS$lr_anneal_step, 0.96, staircase=True)
+    
+    
     # Fill a feed dictionary with the actual set of users-likes and users
     # for this particular training step.
     feed_dict <- fill_feed_dict(data_set = data_sets$train,
-                                features_pl = placeholders$features,
-                                labels_pl = placeholders$labels,
-                                keep_prob_pl = placeholders$keep_prob, 
-                                train = TRUE)
+                                placeholders, train = TRUE)
     
     # Run one step of the model.  The return values are the activations
     # from the `train_op` (which is discarded) and the `loss` Op.  To
@@ -239,10 +251,7 @@ with(tf$Graph()$as_default(), {
 
       # Calculate loss over test data
       test_feed_dict <- fill_feed_dict(data_set = data_sets$test,
-                                       features_pl = placeholders$features,
-                                       labels_pl = placeholders$labels,
-                                       keep_prob_pl = placeholders$keep_prob, 
-                                       train = FALSE)
+                                       placeholders, train = FALSE)
       test_values <- sess$run(list(summary, loss_op), feed_dict = test_feed_dict)
       summary_str_test <- test_values[[1]]
       test_loss_value <- test_values[[2]]
@@ -268,25 +277,23 @@ with(tf$Graph()$as_default(), {
       cat('\nTraining Data Eval:\n')
       do_eval(sess,
               predicts,
-              placeholders$features,
-              placeholders$labels,
-              placeholders$keep_prob,
-              data_sets$train, train = TRUE)
+              placeholders,
+              data_sets$train, 
+              train = TRUE)
       
       # Evaluate against the test set.
       cat('Test Data Eval:\n')
       do_eval(sess,
               predicts,
-              placeholders$features,
-              placeholders$labels,
-              placeholders$keep_prob,
-              data_sets$test, train = FALSE)
+              placeholders,
+              data_sets$test, 
+              train = FALSE)
     } 
   }
   
   # Final details about method
-  cat(sprintf("Learning rate: %.4f, dropout = %.2f, input_features = %d, hidden1 = %d, hidden2 = %d\n",
-              FLAGS$learning_rate, FLAGS$dropout, data_sets$features_dimension, FLAGS$hidden1, FLAGS$hidden2))
+  cat(sprintf("Learning rate start/final: %.4f/%.4f, dropout = %.2f, input_features = %d, hidden1 = %d, hidden2 = %d\n",
+              FLAGS$learning_rate, learning_rate, FLAGS$dropout, data_sets$features_dimension, FLAGS$hidden1, FLAGS$hidden2))
   train_error <- mean(errors$train)
   test_error <- mean(errors$test)
   cat(sprintf("Mean train/test errors: %.4f / %.4f, train optimizer: %s", train_error, test_error, train_op$name))
