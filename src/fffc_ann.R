@@ -1,4 +1,4 @@
-# Builds psyhodemographic data deep learning network
+# The fast forward fully connected artificial neural network
 # 
 # Implements the inference/loss/training pattern for model building.
 # 

@@ -1,8 +1,8 @@
-# This is analysis based on Fully Connected Feed Forward Deep Learning Network with dropout regularization 
+# This is analysis based on Fully Connected Feed Forward Learning Network with dropout regularization 
 # build with TensorFlow framework.
 
 source('./src/config.R')
-source('./src/dnn.R')
+source('./src/fffc_ann.R')
 source('./src/users_likes_data_set.R')
 source('./src/utils.R')
 
