@@ -121,8 +121,8 @@ inference <- function(features, hidden1_units, hidden2_units, keep_prob) {
 # Returns:
 #   loss: prediction error tensor of type float.
 prediction_error <- function(predicts, gt_labels) {
-  #err <- (predicts - gt_labels) ^ 2 # Squared Error
-  err <- tf$abs(predicts - gt_labels) # Absolute Error
+  err <- (predicts - gt_labels) ^ 2 # Squared Error
+  #err <- tf$abs(predicts - gt_labels) # Absolute Error
   with(tf$name_scope("total"), {
     loss <- tf$reduce_mean(err) # Mean Squared(Absolute) Error
     tf$summary$scalar("loss", loss)

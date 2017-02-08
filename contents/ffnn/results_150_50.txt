@@ -596,4 +596,28 @@ Step 50000: train loss = 1.01, test loss = 0.82 (duration: 0.0266599655151367)
 Learning rate start: 0.0050, dropout = 0.40, input_features = 512, hidden1 = 256, hidden2 = 128
 Mean train/test errors: 1.1949 / 0.9630, train optimizer: train/GradientDescent
 =======================================================================
-
+Training Data Eval:
+Prediction accuracies:
+   gender : 62.42%
+      age : 94.09%
+political : 59.48%
+      ope : 26.62%
+      con : 18.56%
+      ext : 15.81%
+      agr : 13.41%
+      neu : 18.75%
+Evaluation MSE: 1.29, MAE: 0.80
+Test Data Eval:
+Prediction accuracies:
+   gender : 77.82%
+      age : 81.67%
+political : 65.05%
+      ope : 36.80%
+      con : 20.30%
+      ext : 21.82%
+      agr : 15.54%
+      neu : 24.81%
+Evaluation MSE: 2.34, MAE: 0.88
+Step 50000: train loss = 1.23, test loss = 1.94 (duration: 0.0427072048187256)
+Learning rate start: 0.0050, dropout = 0.40, input_features = 512, hidden1 = 512, hidden2 = 256
+Mean train/test errors: 1.9487 / 2.4615, train optimizer: train/GradientDescent
