@@ -95,19 +95,21 @@ inference <- function(features, hidden1_units, hidden2_units, keep_prob) {
   
   # Hidden 1
   features_dimension <- features$get_shape()$as_list()[2]
-  hidden1 <- nn_layer(input_tensor = features, features_dimension, hidden1_units, "hidden1")
+  # hidden1 <- nn_layer(input_tensor = features, features_dimension, hidden1_units, "hidden1")
+  hidden1 <- tf$contrib$layers$fully_connected(inputs=features, num_outputs = hidden1_units, activation_fn = tf$nn$relu)#tf.nn.elu
   # Apply dropout to avoid model overfitting on training data
   dropped1 <- dropout(hidden1, keep_prob, "dropout_hidden1")
   
   # Hidden 2
-  hidden2 <- nn_layer(input_tensor = dropped1, hidden1_units, hidden2_units, "hidden2")
+  # hidden2 <- nn_layer(input_tensor = dropped1, hidden1_units, hidden2_units, "hidden2")
+  hidden2 <- tf$contrib$layers$fully_connected(inputs=dropped1, num_outputs = hidden2_units, activation_fn = tf$nn$relu)
   # Apply dropout to avoid model overfitting on training data
   dropped2 <- dropout(hidden2, keep_prob, "dropout_hidden2")
   
   # Return linear regression output layer
   #nn_layer(input_tensor = dropped2, hidden2_units, OUTPUTS_DIMENSION, "linear", act = noop)
   
-  out = tf$contrib$layers$fully_connected(dropped2, num_outputs = OUTPUTS_DIMENSION)
+  tf$contrib$layers$fully_connected(inputs=dropped2, num_outputs = OUTPUTS_DIMENSION, activation_fn = NULL)
 }
 
 # Calculates prediction error from the predictions and the ground truth
