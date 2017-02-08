@@ -12,19 +12,19 @@ library(optparse)
 
 # Basic model parameters as external flags.
 option_list <- list(
-  make_option(c("--learning_rate"), type="double", default=0.03,
+  make_option(c("--learning_rate"), type="double", default=0.005,
               help="Initial learning rate. [default %default]"),
-  make_option(c("--max_steps"), type="integer", default=40000L,
+  make_option(c("--max_steps"), type="integer", default=50000L,
               help="Number of steps to run trainer. [default %default]"),
   make_option(c("--hidden1"), type="integer", default=512L,
               help="Number of units in hidden layer 1. [default %default]"),
-  make_option(c("--hidden2"), type="integer", default=512L,
+  make_option(c("--hidden2"), type="integer", default=256L,
               help="Number of units in hidden layer 2. [default %default]"),
   make_option(c("--batch_size"), type="integer", default=100L,
               help="Batch size. Must divide evenly into the dataset sizes. [default %default]"),
   make_option(c("--train_dir"), type="character", default=sprintf("%s/train_data", out_dir),
               help="Directory to put the training data. [default %default]"),
-  make_option(c("--dropout"), type="double", default=0.5,
+  make_option(c("--dropout"), type="double", default=0.4,
               help="Keep probability for training dropout. [default %default]"),
   make_option(c("--lr_anneal_step"), type="integer", default=10000,
               help="The epoch's step to change learning rate. [default %default]")
@@ -149,9 +149,10 @@ do_eval <- function(sess,
     cat(sprintf("%9s : %.2f%%\n", vars[i], (accuracies[[i]][[1]] * 100.0))) # to console
   }
   # Calculate loss
-  err <- (predictions - labels) ^ 2
-  loss <- mean(err) # MSE
-  cat(sprintf("Evaluation loss: %.2f\n", loss))
+  err <- as.matrix(predictions - labels)
+  mse <- mean(err ^ 2) # MSE
+  mae <- mean(abs(err))
+  cat(sprintf("Evaluation MSE: %.2f, MAE: %.2f\n", mse, mae))
 }
 
 #
