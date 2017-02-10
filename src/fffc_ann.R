@@ -1,4 +1,4 @@
-# The fast forward fully connected artificial neural network
+# The fast forward fully connected artificial neural network with one hidden layer
 # 
 # Implements the inference/loss/training pattern for model building.
 # 
@@ -25,11 +25,24 @@ OUTPUTS_DIMENSION <- 8L
 #   softmax_linear: Output tensor with the computed logits.
 #
 inference <- function(features, hidden1_units, hidden2_units, keep_prob) {
+  
+  # The dropout function
+  dropout <- function(input_tensor, keep_prob_tensor, layer_name) {
+    with(tf$name_scope(layer_name), {
+      tf$summary$scalar("dropout_keep_probability", keep_prob_tensor)
+      dropped <- tf$nn$dropout(input_tensor, keep_prob_tensor)
+    })
+    dropped
+  }
+  
   # Hidden 1
   features_dimension <- features$get_shape()$as_list()[2]
   hidden1 <- tf$contrib$layers$fully_connected(inputs=features, 
                                                num_outputs = hidden1_units, 
-                                               activation_fn = tf$nn$relu)
+                                               activation_fn = tf$nn$relu,
+                                               weights_initializer = tf$contrib$layers$xavier_initializer(),
+                                               weights_regularizer = tf$contrib$layers$l2_regularizer(0.0001),
+                                               biases_initializer = tf$contrib$layers$xavier_initializer())
   tf$contrib$layers$summarize_activation(hidden1)
   tf$contrib$layers$summarize_biases(hidden1)
   tf$contrib$layers$summarize_weights(hidden1)
@@ -37,25 +50,8 @@ inference <- function(features, hidden1_units, hidden2_units, keep_prob) {
   # Apply dropout to avoid model overfitting on training data
   dropped1 <- dropout(hidden1, keep_prob, "dropout_hidden1")
   
-  # Hidden 2
-  hidden2 <- tf$contrib$layers$fully_connected(inputs=dropped1, 
-                                               num_outputs = hidden2_units, 
-                                               activation_fn = tf$nn$relu)
-  tf$contrib$layers$summarize_activation(hidden2)
-  tf$contrib$layers$summarize_biases(hidden2)
-  tf$contrib$layers$summarize_weights(hidden2)
-  
-  # Apply dropout to avoid model overfitting on training data
-  dropped2 <- dropout(hidden2, keep_prob, "dropout_hidden2")
-  
   # Return linear regression output layer
-  #nn_layer(input_tensor = dropped2, hidden2_units, OUTPUTS_DIMENSION, "linear", act = noop)
-  
-  out = tf$contrib$layers$fully_connected(inputs=dropped2, num_outputs = OUTPUTS_DIMENSION, activation_fn = NULL)
-  tf$contrib$layers$summarize_biases(out)
-  tf$contrib$layers$summarize_weights(out)
-  
-  out
+  out = tf$contrib$layers$fully_connected(inputs=dropped1, num_outputs = OUTPUTS_DIMENSION, activation_fn = NULL)
 }
 
 # Calculates prediction error from the predictions and the ground truth
@@ -124,7 +120,8 @@ training <- function(loss, learning_rate_start, lr_anneal_step) {
     
     # Create the gradient descent optimizer with the given learning rate.
     #optimizer <- tf$train$GradientDescentOptimizer(learning_rate)
-    optimizer <- tf$train$AdagradOptimizer(learning_rate = learning_rate)
+    #optimizer <- tf$train$AdagradOptimizer(learning_rate = learning_rate)
+    optimizer <- tf$train$AdamOptimizer(learning_rate = learning_rate)
 
     # Use the optimizer to apply the gradients that minimize the loss
     # (and also increment the global step counter) as a single training step.
