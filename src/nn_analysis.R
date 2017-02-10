@@ -2,7 +2,6 @@
 # build with TensorFlow framework.
 
 source('./src/config.R')
-source('./src/fffc_ann.R')
 source('./src/users_likes_data_set.R')
 source('./src/utils.R')
 
@@ -27,12 +26,18 @@ option_list <- list(
   make_option(c("--dropout"), type="double", default=0.5,
               help="Keep probability for training dropout. [default %default]"),
   make_option(c("--lr_anneal_step"), type="integer", default=10000,
-              help="The epoch's step to change learning rate. [default %default]")
+              help="The epoch's step to change learning rate. [default %default]"),
+  make_option(c("--network_type"), type="character", default="mlp",
+              help="The network type to use. [default %default]")
 )
 parser <- OptionParser(usage = "%prog [options] file", option_list = option_list, add_help_option = TRUE, 
                        description = "This is Fully Connected Feed Forward Deep Learning Network model around Tensorflow")
 args <- parse_args(parser, positional_arguments = TRUE)
 FLAGS <- args$options
+
+# load script with appropriate network type
+s_file <- sprintf("src/%s.R", FLAGS$network_type)
+source(s_file)
 
 # set random number generator's seed - so results will be stable from run to run
 set.seed(44)
