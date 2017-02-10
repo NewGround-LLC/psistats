@@ -190,6 +190,10 @@ with(tf$Graph()$as_default(), {
   # Add to the Graph the Ops that calculate and apply gradients.
   train_op <- training(loss_op, FLAGS$learning_rate, FLAGS$lr_anneal_step)
   
+  # Summarise NN biases and weights
+  tf$contrib$layers$summarize_biases()
+  tf$contrib$layers$summarize_weights()
+  
   # Build the summary Tensor based on the TF collection of Summaries.
   summary <- tf$summary$merge_all()
   
