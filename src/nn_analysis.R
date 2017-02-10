@@ -15,10 +15,6 @@ option_list <- list(
               help="Initial learning rate. [default %default]"),
   make_option(c("--max_steps"), type="integer", default=50000L,
               help="Number of steps to run trainer. [default %default]"),
-  make_option(c("--hidden1"), type="integer", default=512L,
-              help="Number of units in hidden layer 1. [default %default]"),
-  make_option(c("--hidden2"), type="integer", default=256L,
-              help="Number of units in hidden layer 2. [default %default]"),
   make_option(c("--layers"), type="character",
               help="Specify number of neurons per layer separated by coma (e.g.: 512,256,128)."),
   make_option(c("--batch_size"), type="integer", default=100L,
@@ -180,7 +176,7 @@ errors <- list(train = c(), test = c())
 
 # The units per layer
 layers <- as.integer(strsplit(FLAGS$layers, ",")[[1]])
-print(sprintf("Building NN with layers: %s", layers))
+print(sprintf("Building NN with layers: [%s]", FLAGS$layers))
 
 # Tell TensorFlow that the model will be built into the default Graph.
 with(tf$Graph()$as_default(), {
@@ -199,10 +195,11 @@ with(tf$Graph()$as_default(), {
   # Summarise NN biases and weights
   tf$contrib$layers$summarize_biases()
   tf$contrib$layers$summarize_weights()
-  
+  tf$contrib$layers$summarize_variables()
+
   # Build the summary Tensor based on the TF collection of Summaries.
   summary <- tf$summary$merge_all()
-  
+
   # Add the variable initializer Op.
   init <- tf$global_variables_initializer()
   
@@ -293,8 +290,8 @@ with(tf$Graph()$as_default(), {
   }
   
   # Final details about method
-  cat(sprintf("Learning rate start: %.4f, dropout = %.2f, input_features = %d, layers = %s\n",
-              FLAGS$learning_rate, FLAGS$dropout, data_sets$features_dimension, layers))
+  cat(sprintf("Learning rate start: %.4f, dropout = %.2f, input_features = %d, layers = [%s]\n",
+              FLAGS$learning_rate, FLAGS$dropout, data_sets$features_dimension, FLAGS$layers))
   train_error <- mean(errors$train)
   test_error <- mean(errors$test)
   cat(sprintf("Mean train/test errors: %.4f / %.4f, train optimizer: %s\n", train_error, test_error, train_op$name))
