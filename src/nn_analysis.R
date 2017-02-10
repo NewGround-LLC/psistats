@@ -19,6 +19,8 @@ option_list <- list(
               help="Number of units in hidden layer 1. [default %default]"),
   make_option(c("--hidden2"), type="integer", default=256L,
               help="Number of units in hidden layer 2. [default %default]"),
+  make_option(c("--layers"), type="character",
+              help="Specify number of neurons per layer separated by coma (e.g.: 512,256,128)."),
   make_option(c("--batch_size"), type="integer", default=100L,
               help="Batch size. Must divide evenly into the dataset sizes. [default %default]"),
   make_option(c("--train_dir"), type="character", default=sprintf("%s/train_data", out_dir),
@@ -176,13 +178,16 @@ data_sets <- ul_read_data_set(ul_file = ul_reduced_prdata_file, users_file = use
 # List to store train and test errors per step
 errors <- list(train = c(), test = c())
 
+# The units per layer
+layers <- as.integer(strsplit(FLAGS$layers, ",")[[1]])
+
 # Tell TensorFlow that the model will be built into the default Graph.
 with(tf$Graph()$as_default(), {
   # Generate placeholders for the users-likes and users
   placeholders <- placeholder_inputs(FLAGS$batch_size, data_sets$features_dimension)
   
   # Build a Graph that computes predictions from the inference model.
-  predicts <- inference(placeholders$features, FLAGS$hidden1, FLAGS$hidden2, placeholders$keep_prob)
+  predicts <- inference(placeholders$features, layers, placeholders$keep_prob)
   
   # Add to the Graph the Ops for training loss calculation.
   loss_op <- loss(predicts, placeholders$labels)
@@ -287,8 +292,8 @@ with(tf$Graph()$as_default(), {
   }
   
   # Final details about method
-  cat(sprintf("Learning rate start: %.4f, dropout = %.2f, input_features = %d, hidden1 = %d, hidden2 = %d\n",
-              FLAGS$learning_rate, FLAGS$dropout, data_sets$features_dimension, FLAGS$hidden1, FLAGS$hidden2))
+  cat(sprintf("Learning rate start: %.4f, dropout = %.2f, input_features = %d, layers = %s\n",
+              FLAGS$learning_rate, FLAGS$dropout, data_sets$features_dimension, layers))
   train_error <- mean(errors$train)
   test_error <- mean(errors$test)
   cat(sprintf("Mean train/test errors: %.4f / %.4f, train optimizer: %s", train_error, test_error, train_op$name))
