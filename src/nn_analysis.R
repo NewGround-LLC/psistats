@@ -296,7 +296,7 @@ with(tf$Graph()$as_default(), {
               FLAGS$learning_rate, FLAGS$dropout, data_sets$features_dimension, layers))
   train_error <- mean(errors$train)
   test_error <- mean(errors$test)
-  cat(sprintf("Mean train/test errors: %.4f / %.4f, train optimizer: %s", train_error, test_error, train_op$name))
+  cat(sprintf("Mean train/test errors: %.4f / %.4f, train optimizer: %s\n", train_error, test_error, train_op$name))
 })
 
 
