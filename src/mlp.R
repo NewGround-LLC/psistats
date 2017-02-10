@@ -1,4 +1,4 @@
-# The fast forward fully connected artificial neural network with one hidden layer
+# The fast forward fully connected artificial neural network with one hidden layer (MLP)
 # 
 # Implements the inference/loss/training pattern for model building.
 # 
