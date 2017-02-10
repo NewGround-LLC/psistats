@@ -17,14 +17,13 @@ OUTPUTS_DIMENSION <- 8L
 #
 # Args:
 #   features: Users-Likes placeholder, from placeholder_inputs().
-#   hidden1_units: Size of the first hidden layer.
-#   hidden2_units: Size of the second hidden layer.
+#   layers: The vector with number of units per layer.
 #   keep_prob: dropout probability placeholder, from placeholder_inputs().
 #
 # Returns:
 #   softmax_linear: Output tensor with the computed logits.
 #
-inference <- function(features, hidden1_units, hidden2_units, keep_prob) {
+inference <- function(features, layers, keep_prob) {
   
   # The dropout function
   dropout <- function(input_tensor, keep_prob_tensor, layer_name) {
@@ -38,14 +37,12 @@ inference <- function(features, hidden1_units, hidden2_units, keep_prob) {
   # Hidden 1
   features_dimension <- features$get_shape()$as_list()[2]
   hidden1 <- tf$contrib$layers$fully_connected(inputs=features, 
-                                               num_outputs = hidden1_units, 
+                                               num_outputs = layers[1], 
                                                activation_fn = tf$nn$relu,
                                                weights_initializer = tf$contrib$layers$xavier_initializer(),
                                                weights_regularizer = tf$contrib$layers$l2_regularizer(0.0001),
                                                biases_initializer = tf$contrib$layers$xavier_initializer())
   tf$contrib$layers$summarize_activation(hidden1)
-  tf$contrib$layers$summarize_biases(hidden1)
-  tf$contrib$layers$summarize_weights(hidden1)
   
   # Apply dropout to avoid model overfitting on training data
   dropped1 <- dropout(hidden1, keep_prob, "dropout_hidden1")
