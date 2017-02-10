@@ -46,7 +46,7 @@ inference <- function(features, layers, keep_prob) {
   dropped1 <- dropout(hidden1, keep_prob, "dropout_hidden1")
   
   # The linear regression layer
-  linear = tf$contrib$layers$fully_connected(inputs = dropped1, num_outputs = layers[2], activation_fn = NULL)
+  linear = tf$contrib$layers$linear(inputs = dropped1, num_outputs = layers[2])
   
   # Hidden 2
   hidden2 <- tf$contrib$layers$fully_connected(inputs = linear, 
@@ -60,7 +60,7 @@ inference <- function(features, layers, keep_prob) {
   dropped2 <- dropout(hidden2, keep_prob, "dropout_hidden2")
   
   # Return linear regression output layer
-  out = tf$contrib$layers$fully_connected(inputs = dropped2, num_outputs = OUTPUTS_DIMENSION, activation_fn = NULL)
+  out = tf$contrib$layers$linear(inputs = dropped2, num_outputs = OUTPUTS_DIMENSION)
 }
 
 # Calculates prediction error from the predictions and the ground truth
