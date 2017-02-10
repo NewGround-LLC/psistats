@@ -180,6 +180,7 @@ errors <- list(train = c(), test = c())
 
 # The units per layer
 layers <- as.integer(strsplit(FLAGS$layers, ",")[[1]])
+print(sprintf("Building NN with layers: %s", layers))
 
 # Tell TensorFlow that the model will be built into the default Graph.
 with(tf$Graph()$as_default(), {
