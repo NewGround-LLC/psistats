@@ -25,95 +25,37 @@ OUTPUTS_DIMENSION <- 8L
 #   softmax_linear: Output tensor with the computed logits.
 #
 inference <- function(features, hidden1_units, hidden2_units, keep_prob) {
-  # We can't initialize these variables to 0 - the network will get stuck since we use ReLU.
-  weight_variable <- function(shape) {
-    initial <- tf$truncated_normal(shape, stddev = 0.1 / sqrt(shape[[2]]))
-    tf$Variable(initial)
-  }
-  
-  bias_variable <- function(shape) {
-    initial <- tf$constant(0.1, shape = shape)
-    tf$Variable(initial)
-  }
-  
-  # Attach a lot of summaries to a Tensor
-  variable_summaries <- function(var, name) {
-    with(tf$name_scope("summaries"), {
-      mean <- tf$reduce_mean(var)
-      tf$summary$scalar(paste0("mean/", name), mean)
-      with(tf$name_scope("stddev"), {
-        stddev <- tf$sqrt(tf$reduce_mean(tf$square(var - mean)))
-      })
-      tf$summary$scalar(paste0("stddev/", name), stddev)
-      tf$summary$scalar(paste0("max/", name), tf$reduce_max(var))
-      tf$summary$scalar(paste0("min/", name), tf$reduce_min(var))
-      tf$summary$histogram(name, var)
-    })
-  }
-  
-  # Reusable code for making a simple neural net layer.
-  #
-  # It does a matrix multiply, bias add, and then uses relu to nonlinearize.
-  # It also sets up name scoping so that the resultant graph is easy to read,
-  # and adds a number of summary ops.
-  #
-  nn_layer <- function(input_tensor, input_dim, output_dim,
-                       layer_name, act=tf$nn$relu) {
-    with(tf$name_scope(layer_name), {
-      # This Variable will hold the state of the weights for the layer
-      with(tf$name_scope("weights"), {
-        weights <- weight_variable(shape(input_dim, output_dim))
-        variable_summaries(weights, paste0(layer_name, "/weights"))
-      })
-      with(tf$name_scope("biases"), {
-        biases <- bias_variable(shape(output_dim))
-        variable_summaries(biases, paste0(layer_name, "/biases"))
-      })
-      with (tf$name_scope("Wx_plus_b"), {
-        preactivate <- tf$matmul(input_tensor, weights) + biases
-        tf$summary$histogram(paste0(layer_name, "/pre_activations"), preactivate)
-      })
-      activations <- act(preactivate, name = "activation")
-      tf$summary$histogram(paste0(layer_name, "/activations"), activations)
-    })
-    activations
-  }
-  
-  # The no operation function
-  noop <- function(input_tensor, name) {
-    input_tensor # just return input
-  }
-  
-  # The dropout function
-  dropout <- function(input_tensor, keep_prob_tensor, layer_name) {
-    with(tf$name_scope(layer_name), {
-      tf$summary$scalar("dropout_keep_probability", keep_prob_tensor)
-      dropped <- tf$nn$dropout(input_tensor, keep_prob_tensor)
-    })
-    dropped
-  }
-  
   # Hidden 1
   features_dimension <- features$get_shape()$as_list()[2]
-  # hidden1 <- nn_layer(input_tensor = features, features_dimension, hidden1_units, "hidden1")
   hidden1 <- tf$contrib$layers$fully_connected(inputs=features, 
                                                num_outputs = hidden1_units, 
-                                               activation_fn = tf$nn$elu)#tf.nn.relu
+                                               activation_fn = tf$nn$relu)
+  tf$contrib$layers$summarize_activation(hidden1)
+  tf$contrib$layers$summarize_biases(hidden1)
+  tf$contrib$layers$summarize_weights(hidden1)
+  
   # Apply dropout to avoid model overfitting on training data
   dropped1 <- dropout(hidden1, keep_prob, "dropout_hidden1")
   
   # Hidden 2
-  # hidden2 <- nn_layer(input_tensor = dropped1, hidden1_units, hidden2_units, "hidden2")
   hidden2 <- tf$contrib$layers$fully_connected(inputs=dropped1, 
                                                num_outputs = hidden2_units, 
-                                               activation_fn = tf$nn$elu)#tf.nn.relu
+                                               activation_fn = tf$nn$relu)
+  tf$contrib$layers$summarize_activation(hidden2)
+  tf$contrib$layers$summarize_biases(hidden2)
+  tf$contrib$layers$summarize_weights(hidden2)
+  
   # Apply dropout to avoid model overfitting on training data
   dropped2 <- dropout(hidden2, keep_prob, "dropout_hidden2")
   
   # Return linear regression output layer
   #nn_layer(input_tensor = dropped2, hidden2_units, OUTPUTS_DIMENSION, "linear", act = noop)
   
-  tf$contrib$layers$fully_connected(inputs=dropped2, num_outputs = OUTPUTS_DIMENSION, activation_fn = NULL)
+  out = tf$contrib$layers$fully_connected(inputs=dropped2, num_outputs = OUTPUTS_DIMENSION, activation_fn = NULL)
+  tf$contrib$layers$summarize_biases(out)
+  tf$contrib$layers$summarize_weights(out)
+  
+  out
 }
 
 # Calculates prediction error from the predictions and the ground truth
