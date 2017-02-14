@@ -39,23 +39,24 @@ $Rscript ./src/preprocessing.R -u 150 -l 50
 ```
 where: **-u** is the minimum number of users per like, and **-l** is the minimum number of likes per user to keep in resulting matrix
 As result of users-likes matrix trimming we obtain significantly reduced data corpus which has lower demands for computational resources and mush more useful for manual analysis to extract specific patterns. The descriptive statistics of users-likes matrix before and after trimming present in Table 1.
-```
-Descriptive statistics  Raw matrix  Trimmed Matrix
-# of users		        110 728         19 742
-# of unique Likes	   1 580 284         8 523
-# of User-Like pairs  10 612 326      3 817 840
-Matrix density		    0.006 %        2.269 %
+
+Descriptive statistics | Raw matrix | Trimmed Matrix
+———————————————————————|————————————|———————————————
+# of users | 110 728 | 19 742
+# of unique Likes | 1 580 284 | 8 523
+# of User-Like pairs | 10 612 326 | 3 817 840
+Matrix density | 0.006 % | 2.269 %
 Likes per User
-	Mean		           96            193
-	Median		           22            106
-	Minimum		            1             50
-	Maximum		         7 973          2 487
-Users per Like
-	Mean		            7            448
-	Median		            1            290
-	Minimum		            1            150
-	Maximum		        19 998          8 445
-```
+	Mean | 96 | 193
+	Median | 22 | 106
+	Minimum | 1 | 50
+	Maximum | 7 973 | 2 487
+Users per Like 
+	Mean | 7 | 448
+	Median | 1 | 290
+	Minimum | 1 | 150
+	Maximum | 19 998 | 8 445
+
 *Table 1. The descriptive statistics of raw users-likes matrix and trimmed users-likes matrix with minimum users per like threshold set to 150 and minimum likes per user - 50*
 
 ### Dimensionality reduction with SVD
@@ -97,9 +98,9 @@ In this work we will apply singular value decomposition (SVD) with subsequent va
 
 One of the popular methods to find optimal number of SVD dimensions (`K`) is to produce number of models for different values of `K` and plot it against prediction accuracy. Typically prediction accuracy grows rapidly with lower ranges of `K`, and may start decreasing once the number of clusters becomes very large. Selecting a `K` that marks the end of a rapid growth of prediction accuracy values usually offers decent interpretability of the topics. Larger `K` values usually offer better predictive power.(Zhang-Marron-Shen-Zhu:2007dg)
 
-![Prediction accuracies for different values of K SVD dimensions](https://github.com/yaricom/psistats/blob/master/contents/regression/150_50/svd_traits_regression_correlations.png "Prediction accuracies for different values of K SVD dimensions")
+![Prediction accuracies for different values of K SVD dimensions](https://github.com/yaricom/psistats/blob/master/contents/regression/150_50/svd_traits_regression_correlations.png)
 
-Relationship between the accuracy of predicting psycho-demographic traits and the number of the varimax-rotated singular value decomposition dimensions used. The results suggest that employing \(K = 50\) SVD dimensions might be a good choice for building models predicting almost all individual's traits of interest, as it offers accuracy that is close to what seems like the higher asymptote for this data. But for Openness, Extroversion, and Agreeableness traits prediction results can be further improved with higher values of \(K\) SVD dimensions.
+Figure 1. Relationship between the accuracy of predicting psycho-demographic traits and the number of the varimax-rotated singular value decomposition dimensions used. The results suggest that employing \(K = 50\) SVD dimensions might be a good choice for building models predicting almost all individual's traits of interest, as it offers accuracy that is close to what seems like the higher asymptote for this data. But for Openness, Extroversion, and Agreeableness traits prediction results can be further improved with higher values of `K` SVD dimensions.
 
 
 
