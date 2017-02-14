@@ -46,12 +46,12 @@ Descriptive statistics | Raw matrix | Trimmed Matrix
 # of unique Likes | 1 580 284 | 8 523
 # of User-Like pairs | 10 612 326 | 3 817 840
 Matrix density | 0.006 % | 2.269 %
-Likes per User
+Likes per User | |
 	Mean | 96 | 193
 	Median | 22 | 106
 	Minimum | 1 | 50
 	Maximum | 7 973 | 2 487
-Users per Like 
+Users per Like | |
 	Mean | 7 | 448
 	Median | 1 | 290
 	Minimum | 1 | 150
@@ -100,7 +100,7 @@ One of the popular methods to find optimal number of SVD dimensions (`K`) is to 
 
 ![Prediction accuracies for different values of K SVD dimensions](https://github.com/yaricom/psistats/blob/master/contents/regression/150_50/svd_traits_regression_correlations.png)
 
-Figure 1. Relationship between the accuracy of predicting psycho-demographic traits and the number of the varimax-rotated singular value decomposition dimensions used. The results suggest that employing \(K = 50\) SVD dimensions might be a good choice for building models predicting almost all individual's traits of interest, as it offers accuracy that is close to what seems like the higher asymptote for this data. But for Openness, Extroversion, and Agreeableness traits prediction results can be further improved with higher values of `K` SVD dimensions.
+*Figure 1. Relationship between the accuracy of predicting psycho-demographic traits and the number of the varimax-rotated singular value decomposition dimensions used. The results suggest that employing \(K = 50\) SVD dimensions might be a good choice for building models predicting almost all individual's traits of interest, as it offers accuracy that is close to what seems like the higher asymptote for this data. But for Openness, Extroversion, and Agreeableness traits prediction results can be further improved with higher values of `K` SVD dimensions.*
 
 
 
