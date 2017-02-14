@@ -1,5 +1,5 @@
 # Abstract
-It will be shown how to apply basic machine learning algorithms and methodologies to perform analysis of data corpus comprising of collected Facebook likes and psycho-demographic traits of persons associated. Finally, we will be analyse performance of classic linear/logistic regression methods applied against more advanced algorithms based on deep machine learning methodologies. The work is also accompanied by corresponding source code in R programming language (R Core Team, 2015) for further analysis by interested parties.
+It will be shown how to apply basic machine learning algorithms and methodologies to perform analysis of data corpus comprising of collected Facebook likes and psycho-demographic traits of persons associated. Finally, we will analyse performance of classic linear/logistic regression methods applied against more advanced algorithms based on deep machine learning methodologies. The work is also accompanied by corresponding source code in R programming language (R Core Team, 2015) for further analysis by interested parties.
 
 # Overview
 Recent research demonstrates applicability of machine learning for analysis of user generated content in order to study important personality traits (Lambiotte & Kosinski, 2014). It was demonstrated that strong statistical correlation exists between digital footprints of individuals and their psychometric traits based on the five-factor (i.e., Openness, Conscientiousness, Extroversion, Agreeableness, and Neuroticism) model of personality (Goldberg et al., 2006).
@@ -59,6 +59,7 @@ Users per Like
 *Table 1. The descriptive statistics of raw users-likes matrix and trimmed users-likes matrix with minimum users per like threshold set to 150 and minimum likes per user - 50*
 
 ### Dimensionality reduction with SVD
+
 The users-likes matrix after preprocessing still have extreme count of features per data sample. In order to make it more maintenable we will consider applying singular value decomposition (SVD, Golub, G. H., & Reinsch, 1970), representing eigendecomposition-based methods, projecting a set of data points into a set of dimensions.
 Reducing the dimensionality of data corpus has number of advantages:
 
@@ -69,11 +70,38 @@ Reducing the dimensionality of data corpus has number of advantages:
 5. And finally it makes it easier to analyze data by hand over small set of dimensions as opposite to hundreds or thousands of separate features
 
 ### Factor rotation analysis
+
 The factor rotation analysis techniques can be used to simplify SVD dimensions and increase their interpretability by mapping the original multidimensional space into a new, rotated space. Rotation approaches can be orthogonal (i.e., producing uncorrelated dimensions) or oblique (i.e., allowing for correlations between rotated dimensions).
 
 We will apply one of the most popular orthogonal rotation - varimax. It minimizes both the number of dimensions related to each variable and the number of variables related to each dimension, thus improving the interpretability of the data.
 
 For more details on rotation techniques, see (Abdi, 2003).
+
+## Regression analysis
+
+In this section we will consider building of prediction model based on pre-processed data corpus. There is an abundance of methods developed to build prediction models based on large data sets. It's ranging from sophisticated methods such as Deep Learning (Goodfellow-et-al:2016dg), probabilistic graphical models (Daphne-Koller:2012dg), or support vector machines (Cortes-Vapnik:1995dg), to much simpler, such as linear and logistic regressions (Yan-Su:2009dg). 
+
+Starting with simple methods is commonly recommended practice allowing creation of good baseline prediction model with minimal computational efforts. The results obtained from these models can be used later to debug and estimate quality of results obtained by advanced models.
+
+### Cross-Validation
+
+In statistics and machine learning, one of the most common tasks is to fit a "model" to a set of training data, so as to be able to make reliable predictions on general untrained data. In overfitting, a statistical model describes random error or noise instead of the underlying relationship. Overfitting occurs when a model is excessively complex, such as having too many parameters relative to the number of observations. A model that has been overfit has poor predictive performance, as it overreacts to minor fluctuations in the training data.
+
+In order to avoid overfitting, it is necessary to use additional techniques (e.g. cross-validation, regularization, early stopping, pruning, Bayesian priors on parameters or model comparison), that can indicate when further training is not resulting in better generalization.
+
+In this work we will apply k-fold cross-validation to avoid model overfitting. In k-fold cross-validation, the original sample is randomly partitioned into k equal sized subsamples. Of the k subsamples, a single subsample is retained as the validation data for testing the model, and the remaining `k-1` subsamples are used as training data. The cross-validation process is then repeated k times (the folds), with each of the k subsamples used exactly once as the validation data. The k results from the folds can then be averaged to produce a single estimation. The advantage of this method over repeated random sub-sampling (see below) is that all observations are used for both training and validation, and each observation is used for validation exactly once. 10-fold cross-validation is commonly used, but in general `k` remains an unfixed parameter.(Kohavi:1995dg)
+
+### Dimensionality Reduction
+
+In this work we will apply singular value decomposition (SVD) with subsequent varimax factor rotation in order to reduce number of features (variables) in data corpus. The number of the varimax-rotated singular value decomposition dimensions (`K`) has impact on accuracy of model's predictions. In order to find optimal number of SVD dimensions we will perform analysis of relationships between `K` and accuracy of model predictions.
+
+One of the popular methods to find optimal number of SVD dimensions (`K`) is to produce number of models for different values of `K` and plot it against prediction accuracy. Typically prediction accuracy grows rapidly with lower ranges of `K`, and may start decreasing once the number of clusters becomes very large. Selecting a `K` that marks the end of a rapid growth of prediction accuracy values usually offers decent interpretability of the topics. Larger `K` values usually offer better predictive power.(Zhang-Marron-Shen-Zhu:2007dg)
+
+![Prediction accuracies for different values of K SVD dimensions](https://github.com/yaricom/psistats/blob/master/contents/regression/150_50/svd_traits_regression_correlations.png "Prediction accuracies for different values of K SVD dimensions")
+
+Relationship between the accuracy of predicting psycho-demographic traits and the number of the varimax-rotated singular value decomposition dimensions used. The results suggest that employing \(K = 50\) SVD dimensions might be a good choice for building models predicting almost all individual's traits of interest, as it offers accuracy that is close to what seems like the higher asymptote for this data. But for Openness, Extroversion, and Agreeableness traits prediction results can be further improved with higher values of \(K\) SVD dimensions.
+
+
 
 # References
 Michal Kosinski, Yilun Wang, Himabindu Lakkaraju, and Jure Leskovec, © 2016 American Psychological Association. Mining Big Data to Extract Patterns and Predict Real-Life Outcomes. Psychological Methods 2016, Vol. 21, No. 4, 493–506. http://dx.doi.org/10.1037/met0000105
