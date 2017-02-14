@@ -109,7 +109,7 @@ One of the popular methods to find optimal number of SVD dimensions (`K`) is to 
 To start analysis run following command from terminal in the project's root directory:
 
 ```
-$Rscript ./src/analysis.R
+Rscript ./src/analysis.R
 ```
 
 The resulting plots will be saved "Rplots.pdf" file in the project root. This file will include two plots:
@@ -117,6 +117,56 @@ The resulting plots will be saved "Rplots.pdf" file in the project root. This fi
 1. The plot with relationships between the accuracy of predicting psycho-demographic traits of individuals and the number of the varimax-rotated SVD dimensions used (Figure 1). With this plot it easy to find optimal number of `K` SVD dimensions for maximal predicting power of regression model per specific psycho-demographic trait of individual.
 
 2. The heat map of correlations between scores of individuals on varimax-rotated SVD dimensions and psycho-demographic traits (Figure 2). This plot can be used to visually find most correlated traits of individuals, which results in higher predictive power of regression model for those traits.
+
+## Building regression model and prediction results
+
+In our data corpus we have eight scores for psycho-demographic traits of individual to be predicted. Among those scores six have continuous values and two are has categorical values (binominal: 0, 1). In order to build prediction model for traits with continuous values we will apply linear regression and for traits with categorical values - logistic regression.
+
+### Linear regression
+
+The linear regression is an approach for modeling the relationship between a scalar dependent variable `y` and one or more explanatory variables (or independent variables) denoted `X`. The case of one explanatory variable is called simple linear regression. For more than one explanatory variable, the process is called multiple linear regression.(David-Freedman:2009dg)
+
+In linear regression, the relationships are modeled using linear predictor functions whose unknown model parameters are estimated from the data. Such models are called linear models.(Hilary-Seal:1967) Most commonly, the conditional mean of `y` given the value of `X` is assumed to be an affine function of `X`; less commonly, the median or some other quantile of the conditional distribution of `y` given `X` is expressed as a linear function of `X`. Like all forms of regression analysis, linear regression focuses on the conditional probability distribution of `y` given `X`, rather than on the joint probability distribution of `y` and `X`, which is the domain of multivariate analysis.
+
+### Logistic regression
+
+The logistic regression, or logit regression, or logit model (David-Freedman:2009) is a regression model where the dependent variable (DV) is categorical.
+
+Logistic regression measures the relationship between the categorical dependent variable and one or more independent variables by estimating probabilities using a logistic function, which is the cumulative logistic distribution. Thus, it treats the same set of problems as probit regression using similar techniques, with the latter using a cumulative normal distribution curve instead. Equivalently, in the latent variable interpretations of these two methods, the first assumes a standard logistic distribution of errors and the second a standard normal distribution of errors. (Rodriguez:2007)
+
+In this article we will consider only specialized binary logistic regression because dependent variables found in our data corpus are binominal, i.e. have only two possible types, "0" and "1".
+
+### Running models and prediction results
+
+In this work we will build and train separate models per each psycho-demographic trait of individual. The prediction accuracy of each model will depend on model's regression type:
+
+*  the prediction power of linear regression models will be measured as Pearson product-moment correlation (Gain:1951)
+*  the prediction power of logistic regression models will be measured as area under the receiver-operating characteristic curve coefficient (AUC)(Sing-et-al:2005)
+
+Before executing models make sure that data corpus is pre-processed as described in previous section.
+
+When data corpus is ready the following command can be executed in order to start linear/logistic regression models building and its predictive performance evaluation (run command from terminal in the project's root directory):
+
+```
+Rscript ./src/regression_analysis.R
+```
+
+The results of predictive performance evaluation will be saved into file $"out/pred\_accuracy\_regr.txt"$. The results of regression models predictions for data corpus trimmed to contain 150 users-per-like and 50 likes-per-user varimax-rotated against `K = 50` SVD dimensions presented in Table 2.
+
+Trait | Variable | Pred. accuracy
+----- | -------- | --------------
+Gender | gender | 93.65%
+Age | age | 61.17%
+Political view | political | 68.36%
+Openness | ope | 44.02%
+Conscientiousness | con | 25.72%
+Extroversion | ext | 30.26%
+Agreeableness | agr | 23.97%
+Neuroticism | neu | 29.11%
+
+**Table 2. The linear and logistic regression models predictive accuracy results per depended variable.**
+
+It can be seen that prediction power of simple linear and logistic regression models applied to the data corpus, differs between each dependent variable and for most outputs its accuracies not enough to be applied for real life predictions. As it was predicted by analysis of SVD correlations heatmap (Figure 1) most accurate predictions was made for 'Gender', 'Age', and 'Political view' of examined individuals with 'Openness' trait following next (but with accuracy lower than simple sampling over normal distribution). In general only linear regression model for 'Gender' may be useful for real life predictions.
 
 # References
 Michal Kosinski, Yilun Wang, Himabindu Lakkaraju, and Jure Leskovec, © 2016 American Psychological Association. Mining Big Data to Extract Patterns and Predict Real-Life Outcomes. Psychological Methods 2016, Vol. 21, No. 4, 493–506. http://dx.doi.org/10.1037/met0000105
