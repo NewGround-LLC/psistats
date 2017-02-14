@@ -164,7 +164,7 @@ Extroversion | ext | 30.26%
 Agreeableness | agr | 23.97%
 Neuroticism | neu | 29.11%
 
-**Table 2. The linear and logistic regression models predictive accuracy results per depended variable.**
+*Table 2. The linear and logistic regression models predictive accuracy results per depended variable.*
 
 It can be seen that prediction power of simple linear and logistic regression models applied to the data corpus, differs between each dependent variable and for most outputs its accuracies not enough to be applied for real life predictions. As it was predicted by analysis of SVD correlations heatmap (Figure 1) most accurate predictions was made for 'Gender', 'Age', and 'Political view' of examined individuals with 'Openness' trait following next (but with accuracy lower than simple sampling over normal distribution). In general only linear regression model for 'Gender' may be useful for real life predictions.
 
