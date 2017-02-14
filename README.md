@@ -46,12 +46,12 @@ Descriptive statistics | Raw matrix | Trimmed Matrix
 # of unique Likes | 1 580 284 | 8 523
 # of User-Like pairs | 10 612 326 | 3 817 840
 Matrix density | 0.006 % | 2.269 %
-Likes per User | |
+**Likes per User**
 	Mean | 96 | 193
 	Median | 22 | 106
 	Minimum | 1 | 50
 	Maximum | 7 973 | 2 487
-Users per Like | |
+**Users per Like**
 	Mean | 7 | 448
 	Median | 1 | 290
 	Minimum | 1 | 150
