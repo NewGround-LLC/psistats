@@ -100,9 +100,23 @@ One of the popular methods to find optimal number of SVD dimensions (`K`) is to 
 
 ![Prediction accuracies for different values of K SVD dimensions](https://github.com/yaricom/psistats/blob/master/contents/regression/150_50/svd_traits_regression_correlations.png)
 
-*Figure 1. Relationship between the accuracy of predicting psycho-demographic traits and the number of the varimax-rotated singular value decomposition dimensions used. The results suggest that employing \(K = 50\) SVD dimensions might be a good choice for building models predicting almost all individual's traits of interest, as it offers accuracy that is close to what seems like the higher asymptote for this data. But for Openness, Extroversion, and Agreeableness traits prediction results can be further improved with higher values of `K` SVD dimensions.*
+*Figure 1. Relationship between the accuracy of predicting psycho-demographic traits and the number of the varimax-rotated singular value decomposition dimensions used. The results suggest that employing `K = 50` SVD dimensions might be a good choice for building models predicting almost all individual's traits of interest, as it offers accuracy that is close to what seems like the higher asymptote for this data. But for Openness, Extroversion, and Agreeableness traits prediction results can be further improved with higher values of `K` SVD dimensions.*
 
+![The heat map of correlations between varimax-rotated singular value decomposition dimensions and scores of psycho-demographic traits of individuals](https://github.com/yaricom/psistats/blob/master/contents/regression/150_50/svd_correlation_hmap.png)
 
+*Figure 2. The heat map presenting correlations between `K = 50` varimax-rotated singular value decomposition dimensions and psycho-demographic traits of individuals. The heatmap suggest that Age, Gender, and Political views of individual has maximal correlation with maximal number of SVD dimensions. The higher correlation will result in higher prediction power of regression model for highly correlated psycho-demographic traits (which will be show later).*
+
+To start analysis run following command from terminal in the project's root directory:
+
+```
+$Rscript ./src/analysis.R
+```
+
+The resulting plots will be saved "Rplots.pdf" file in the project root. This file will include two plots:
+
+1. The plot with relationships between the accuracy of predicting psycho-demographic traits of individuals and the number of the varimax-rotated SVD dimensions used (Figure 1). With this plot it easy to find optimal number of `K` SVD dimensions for maximal predicting power of regression model per specific psycho-demographic trait of individual.
+
+2. The heat map of correlations between scores of individuals on varimax-rotated SVD dimensions and psycho-demographic traits (Figure 2). This plot can be used to visually find most correlated traits of individuals, which results in higher predictive power of regression model for those traits.
 
 # References
 Michal Kosinski, Yilun Wang, Himabindu Lakkaraju, and Jure Leskovec, © 2016 American Psychological Association. Mining Big Data to Extract Patterns and Predict Real-Life Outcomes. Psychological Methods 2016, Vol. 21, No. 4, 493–506. http://dx.doi.org/10.1037/met0000105
