@@ -41,7 +41,7 @@ where: **-u** is the minimum number of users per like, and **-l** is the minimum
 As result of users-likes matrix trimming we obtain significantly reduced data corpus which has lower demands for computational resources and mush more useful for manual analysis to extract specific patterns. The descriptive statistics of users-likes matrix before and after trimming present in Table 1.
 
 Descriptive statistics | Raw matrix | Trimmed Matrix
-———————————————————————|————————————|———————————————
+---------------------- | ---------- | --------------
 # of users | 110 728 | 19 742
 # of unique Likes | 1 580 284 | 8 523
 # of User-Like pairs | 10 612 326 | 3 817 840
