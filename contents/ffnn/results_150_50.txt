@@ -674,30 +674,83 @@ Evaluation MSE: 2.15, MAE: 0.85
 Step 50000: train loss = 0.54, test loss = 1.86 (duration: 0.0626718997955322)
 Learning rate start: 0.0010, dropout = 0.50, input_features = 1024, hidden1 = 512
 Mean train/test errors: 1.1746 / 2.4104, train optimizer: train/Adam
+
+
 =======================================================================
 Training Data Eval:
 Prediction accuracies:
-   gender : 92.83%
-      age : 96.51%
-political : 72.01%
-      ope : 67.09%
-      con : 62.10%
-      ext : 66.10%
-      agr : 64.75%
-      neu : 67.88%
+   gender : 92.57%
+      age : 96.42%
+political : 72.21%
+      ope : 68.16%
+      con : 62.07%
+      ext : 67.01%
+      agr : 66.13%
+      neu : 67.60%
 Evaluation MSE: 0.77, MAE: 0.61
 Test Data Eval:
 Prediction accuracies:
-   gender : 94.41%
-      age : 83.09%
-political : 65.23%
-      ope : 41.07%
-      con : 25.37%
-      ext : 24.80%
-      agr : 22.56%
-      neu : 27.54%
-Evaluation MSE: 2.23, MAE: 0.85
-Step 50000: train loss = 0.66, test loss = 1.79 (duration: 0.0306470394134521)
-Learning rate start: 0.0010, dropout = 0.50, input_features = 512, hidden1 = 512
-Mean train/test errors: 1.3955 / 2.5363, train optimizer: train/Adam
+   gender : 93.54%
+      age : 83.00%
+political : 63.08%
+      ope : 43.28%
+      con : 22.06%
+      ext : 22.18%
+      agr : 21.49%
+      neu : 26.28%
+Evaluation MSE: 2.24, MAE: 0.86
+Step 50000: train loss = 0.69, test loss = 1.84 (duration: 0.0425682067871094)
+Learning rate start: 0.0010, dropout = 0.50, input_features = 512, layers = [512]
+Mean train/test errors: 1.3968 / 2.5273, train optimizer: train/Adam
 =======================================================================
+Training Data Eval:
+Prediction accuracies:
+   gender : 90.71%
+      age : 90.95%
+political : 70.16%
+      ope : 55.90%
+      con : 46.62%
+      ext : 52.69%
+      agr : 51.17%
+      neu : 53.54%
+Evaluation MSE: 1.46, MAE: 0.77
+Test Data Eval:
+Prediction accuracies:
+   gender : 93.82%
+      age : 83.59%
+political : 65.32%
+      ope : 44.81%
+      con : 28.26%
+      ext : 30.32%
+      agr : 24.80%
+      neu : 31.96%
+Evaluation MSE: 2.16, MAE: 0.84
+Step 50000: train loss = 1.28, test loss = 1.95 (duration: 0.0421900749206543)
+Learning rate start: 0.0001, dropout = 0.50, input_features = 512, layers = [512]
+Mean train/test errors: 3.2895 / 3.4544, train optimizer: train/Adam
+=======================================================================
+Training Data Eval:
+Prediction accuracies:
+   gender : 86.15%
+      age : 70.39%
+political : 63.81%
+      ope : 37.21%
+      con : 23.62%
+      ext : 26.90%
+      agr : 23.22%
+      neu : 27.92%
+Evaluation MSE: 3.55, MAE: 0.99
+Test Data Eval:
+Prediction accuracies:
+   gender : 90.16%
+      age : 72.47%
+political : 63.81%
+      ope : 45.01%
+      con : 26.69%
+      ext : 33.39%
+      agr : 23.59%
+      neu : 30.97%
+Evaluation MSE: 3.18, MAE: 0.95
+Step 50000: train loss = 4.49, test loss = 3.31 (duration: 0.0601129531860352)
+Learning rate start: 0.00001, dropout = 0.50, input_features = 512, layers = [512]
+Mean train/test errors: 14.3138 / 13.9269, train optimizer: train/Adam
