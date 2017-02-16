@@ -26,7 +26,11 @@ option_list <- list(
   make_option(c("--lr_anneal_step"), type="integer", default=10000,
               help="The epoch's step to change learning rate. [default %default]"),
   make_option(c("--network_type"), type="character", default="mlp",
-              help="The network type to use. [default %default]")
+              help="The network type to use. [default %default]"),
+  make_option(c("--data_features_file"), type="character", default=ul_reduced_prdata_file,
+              help="The Rdata file with features matrix. [default %default]"),
+  make_option(c("--data_targets_file"), type="character", default=users_prdata_file,
+              help="The Rdata file with ground truth dependent variables per sample in features matrix. [default %default]")
 )
 parser <- OptionParser(usage = "%prog [options] file", option_list = option_list, add_help_option = TRUE, 
                        description = "This is Fully Connected Feed Forward Deep Learning Network model around Tensorflow")
@@ -165,11 +169,11 @@ tf$logging$set_verbosity(verbosity = tf$logging$DEBUG)
 
 # Check that input data exist
 print("Checking that input data files exist")
-assertthat::assert_that(file.exists(users_prdata_file))
-assertthat::assert_that(file.exists(ul_reduced_prdata_file))
+assertthat::assert_that(file.exists(FLAGS$data_targets_file))
+assertthat::assert_that(file.exists(FLAGS$data_features_file))
 
 # Get sets of users-likes and users traits for train and test
-data_sets <- ul_read_data_set(ul_file = ul_reduced_prdata_file, users_file = users_prdata_file)
+data_sets <- ul_read_data_set(ul_file = FLAGS$data_features_file, users_file = FLAGS$data_targets_file)
 
 # List to store train and test errors per step
 errors <- list(train = c(), test = c())
