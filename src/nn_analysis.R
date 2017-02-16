@@ -294,7 +294,7 @@ with(tf$Graph()$as_default(), {
   }
   
   # Final details about method
-  cat(sprintf("Learning rate start: %.4f, dropout = %.2f, input_features = %d, layers = [%s]\n",
+  cat(sprintf("Learning rate start: %g, dropout = %.2f, input_features = %d, layers = [%s]\n",
               FLAGS$learning_rate, FLAGS$dropout, data_sets$features_dimension, FLAGS$layers))
   train_error <- mean(errors$train)
   test_error <- mean(errors$test)
