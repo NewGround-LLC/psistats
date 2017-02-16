@@ -42,21 +42,27 @@ ul_read_data_set <- function(ul_file, users_file) {
 #   ul_file: the file with full features sparse Users-Likes matrix
 #   out_file: the file to store preprocessing results
 #   svd_k: the number of SVD dimensions [default: 50]
-ul_save_features_reduced_data_set <- function(ul_file, out_file, svd_k = 50) {
+#   varimax_rotate: the flag to indicate whether results of factor analysis (SVD) should be varimax rotated
+ul_save_features_reduced_data_set <- function(ul_file, out_file, svd_k = 50, varimax_rotate = TRUE) {
   load(ul_prdata_file)
   cat(sprintf("%12s : [%d, %d]\n", "Users-Likes", dim(M)[1], dim(M)[2]))
   
   # do SVD with varimax rotation
   start_time <- Sys.time()
   Msvd <- irlba(M, nv = svd_k)
-  likesSVDrot <- unclass(varimax(Msvd$v)$loadings) # varimax rotated likes per SVD dimensions
-  M <- as.data.frame(as.matrix(M %*% likesSVDrot)) # the varimax rotated users-likes per SVD dimensions
+  if (varimax_rotate) {
+    likesSVDrot <- unclass(varimax(Msvd$v)$loadings) # varimax rotated likes per SVD dimensions
+    M <- as.data.frame(as.matrix(M %*% likesSVDrot)) # the varimax rotated users-likes per SVD dimensions
+  } else {
+    M <- as.data.frame(as.matrix(Msvd$u)) # the users per SVD dimensions
+  }
+    
   duration <- Sys.time() - start_time
   # save reduced matrix if requested
   save(M, file = out_file)
   
-  cat(sprintf('SVD with varimax rotation complete, dimensions: %d, duration: %s, resulting file: %s\n',
-              svd_k, duration, out_file))
+  cat(sprintf('SVD with varimax rotation complete, dimensions: %d, varimax: %s, duration: %s, resulting file: %s\n',
+              svd_k, varimax_rotate, duration, out_file))
 }
 
 # The Users-Likes psychodemographics data set holder class
