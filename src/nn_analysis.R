@@ -15,7 +15,7 @@ option_list <- list(
               help="Initial learning rate. [default %default]"),
   make_option(c("--max_steps"), type="integer", default=50000L,
               help="Number of steps to run trainer. [default %default]"),
-  make_option(c("--layers"), type="character",
+  make_option(c("--layers"), type="character", #default="512",
               help="Specify number of neurons per layer separated by coma (e.g.: 512,256,128)."),
   make_option(c("--batch_size"), type="integer", default=100L,
               help="Batch size. Must divide evenly into the dataset sizes. [default %default]"),
@@ -147,14 +147,17 @@ do_eval <- function(sess,
   
   # show summary of results
   vars <- data_set$labels_names[-1]
-  accuracies <- list()
+  accuracies <- c()
   cat("Prediction accuracies:\n")
   for(i in 1:OUTPUTS_DIMENSION) {
     # find accuracies per column
-    accuracies[[i]] = accuracy(labels[,i], predictions[,i])
-    # cat(sprintf("%9s : %.2f%%\n", vars[i], (accuracies[[i]][[1]] * 100.0)), file = regr_pred_accuracy_file, append = TRUE)
-    cat(sprintf("%9s : %.2f%%\n", vars[i], (accuracies[[i]][[1]] * 100.0))) # to console
+    accuracies[i] <- accuracy(labels[,i], predictions[,i])[[1]]
+    # cat(sprintf("%9s : %.2f%%\n", vars[i], (accuracies[i] * 100.0)), file = regr_pred_accuracy_file, append = TRUE)
+    cat(sprintf("%9s : %.2f%%\n", vars[i], (accuracies[i] * 100.0))) # to console
   }
+  cat(sprintf("------------------\n"))
+  cat(sprintf("%9s : %.2f%%\n", "Mean", .rowMeans(accuracies, 1, OUTPUTS_DIMENSION) * 100.0)) # to console
+  cat(sprintf("%9s : %.2f%%\n", "Std", sd(accuracies) * 100.0)) # to console
   # Calculate loss
   err <- as.matrix(predictions - labels)
   mse <- mean(err ^ 2) # MSE
