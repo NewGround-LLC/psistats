@@ -22,5 +22,9 @@ print("Checking that input data files exist")
 assertthat::assert_that(file.exists(ul_prdata_file))
 
 # run SVD 
-out_file <- sprintf("%s/M_reduced_%d.RData", out_intermediates_dir, opt$svd_dimensions)
+if (opt$apply_varimax) {
+  out_file <- sprintf("%s/M_reduced_%d.RData", out_intermediates_dir, opt$svd_dimensions)
+} else {
+  out_file <- sprintf("%s/M_reduced_%d_no_vm.RData", out_intermediates_dir, opt$svd_dimensions)
+}
 ul_save_features_reduced_data_set(ul_file = ul_prdata_file, out_file = out_file, svd_k = opt$svd_dimensions, varimax_rotate = opt$apply_varimax)
