@@ -46,11 +46,11 @@ inference <- function(features, layers, keep_prob) {
   dropped1 <- dropout(hidden1, keep_prob, "dropout_hidden1")
   
   # The linear regression layer
-  linear = tf$contrib$layers$linear(inputs = dropped1, num_outputs = layers[2])
+  # linear = tf$contrib$layers$linear(inputs = dropped1, num_outputs = layers[2])
   
   # Hidden 2
-  hidden2 <- tf$contrib$layers$fully_connected(inputs = linear, 
-                                               num_outputs = layers[3], 
+  hidden2 <- tf$contrib$layers$fully_connected(inputs = dropped1, 
+                                               num_outputs = layers[2], 
                                                activation_fn = tf$nn$relu,
                                                weights_initializer = tf$contrib$layers$xavier_initializer(),
                                                weights_regularizer = tf$contrib$layers$l2_regularizer(0.0001),
