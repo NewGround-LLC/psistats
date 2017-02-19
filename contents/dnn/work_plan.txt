@@ -226,9 +226,9 @@ political : 81.56%
       agr : 82.54%
       neu : 82.96%
 ------------------
-     Mean : 86.07%
+     Mean : 86.07% <—— !!!!!
       Std : 6.54%
-Evaluation MSE: 0.51, MAE: 0.49
+Evaluation MSE: 0.51, MAE: 0.49 <—— !!!!!
 Test Data Eval:
 Prediction accuracies:
    gender : 95.68%
@@ -246,3 +246,73 @@ Evaluation MSE: 2.31, MAE: 0.85
 Step 30000: train loss = 0.50, test loss = 1.97 (duration: 0.25626802444458)
 Learning rate start: 0.0001, dropout = 0.50, input_features = 1024, layers = [2048,1024]
 Mean train/test errors: 1.1413 / 2.4997, train optimizer: train/Adam
+===================================
+
+k = 1024, [2048,1024], lr = 10e-5
+————
+Training Data Eval:
+Prediction accuracies:
+   gender : 87.10%
+      age : 93.91%
+political : 65.32%
+      ope : 44.18%
+      con : 29.54%
+      ext : 34.59%
+      agr : 27.99%
+      neu : 34.14%
+------------------
+     Mean : 52.10%
+      Std : 26.54%
+Evaluation MSE: 1.25, MAE: 0.77
+Test Data Eval:
+Prediction accuracies:
+   gender : 93.76%
+      age : 79.85%
+political : 66.50%
+      ope : 47.78%
+      con : 28.53%
+      ext : 33.25%
+      agr : 28.10%
+      neu : 34.75%
+------------------
+     Mean : 51.56%
+      Std : 25.40%
+Evaluation MSE: 2.49, MAE: 0.89
+Step 30000: train loss = 1.36, test loss = 2.35 (duration: 0.263324975967407)
+Learning rate start: 1e-05, dropout = 0.50, input_features = 1024, layers = [2048,1024]
+Mean train/test errors: 3.6571 / 3.9365, train optimizer: train/Adam
+===================================
+
+k = 1024, [2048,1024], lr = 10e-3 !!!!
+————
+Training Data Eval:
+Prediction accuracies:
+   gender : 90.88%
+      age : 96.57%
+political : 76.73%
+      ope : 80.77%
+      con : 79.97%
+      ext : 80.60%
+      agr : 80.17%
+      neu : 80.85%
+------------------
+     Mean : 83.32%
+      Std : 6.73%
+Evaluation MSE: 0.65, MAE: 0.52
+Test Data Eval:
+Prediction accuracies:
+   gender : 92.17%
+      age : 82.53%
+political : 63.88%
+      ope : 40.88%
+      con : 22.65%
+      ext : 21.98%
+      agr : 25.69%
+      neu : 31.96%
+------------------
+     Mean : 47.72%
+      Std : 28.08%
+Evaluation MSE: 2.64, MAE: 0.87
+Step 30000: train loss = 0.66, test loss = 1.53 (duration: 0.286546945571899)
+Learning rate start: 0.001, dropout = 0.50, input_features = 1024, layers = [2048,1024]
+Mean train/test errors: 1.0069 / 2.5757, train optimizer: train/Adam
