@@ -24,7 +24,9 @@ option_list <- list(
   make_option(c("--dropout"), type="double", default=0.5,
               help="Keep probability for training dropout. [default %default]"),
   make_option(c("--lr_anneal_step"), type="integer", default=10000,
-              help="The epoch's step to change learning rate. [default %default]"),
+              help="The iteration step to change learning rate. [default %default]"),
+  make_option(c("--lr_decay_rate"), type="double", default=0.96,
+              help="The decay rate for learing rate. [default %default]"),
   make_option(c("--network_type"), type="character", default="mlp",
               help="The network type to use. [default %default]"),
   make_option(c("--data_features_file"), type="character", default=ul_reduced_prdata_file,
@@ -197,7 +199,7 @@ with(tf$Graph()$as_default(), {
   loss_op <- loss(predicts, placeholders$labels)
   
   # Add to the Graph the Ops that calculate and apply gradients.
-  train_op <- training(loss_op, FLAGS$learning_rate, FLAGS$lr_anneal_step)
+  train_op <- training(loss_op, FLAGS$learning_rate, FLAGS$lr_anneal_step, FLAGS$lr_decay_rate)
   
   # Summarise NN biases and weights
   tf$contrib$layers$summarize_biases()

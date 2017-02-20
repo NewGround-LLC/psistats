@@ -110,16 +110,17 @@ loss <- function(predicts, gt_labels) {
 #   loss: Loss tensor, from loss().
 #   learning_rate_start: The starting learning rate to use for gradient descent.
 #   lr_anneal_step: The decay steps for learning rate
+#   lr_decay_rate: The learning rate decay rate
 #
 # Returns:
 #   train_op: The Op for training.
 #
-training <- function(loss, learning_rate_start, lr_anneal_step) {
+training <- function(loss, learning_rate_start, lr_anneal_step, lr_decay_rate = 0.96) {
   with(tf$name_scope("train"), {
     # Create a variable to track the global step.
     global_step <- tf$Variable(0L, name = 'global_step', trainable = FALSE)
-    learning_rate = tf$train$exponential_decay(learning_rate=learning_rate_start, global_step=global_step, 
-                                               decay_steps=lr_anneal_step, decay_rate=0.96, 
+    learning_rate = tf$train$exponential_decay(learning_rate = learning_rate_start, global_step = global_step, 
+                                               decay_steps = lr_anneal_step, decay_rate = lr_decay_rate, 
                                                staircase=TRUE)
     
     # Add a scalar summary for the snapshot loss.
