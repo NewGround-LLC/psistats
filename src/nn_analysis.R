@@ -299,8 +299,10 @@ with(tf$Graph()$as_default(), {
   }
   
   # Final details about method
-  cat(sprintf("Learning rate start: %g, dropout = %.2f, input_features = %d, layers = [%s]\n",
-              FLAGS$learning_rate, FLAGS$dropout, data_sets$features_dimension, FLAGS$layers))
+  cat(sprintf("Dropout probability = %.2f, input_features = %d, layers = [%s]\n",
+              FLAGS$dropout, data_sets$features_dimension, FLAGS$layers))
+  cat(sprintf("Learning rate initial: %g, [annealing step = %d, decay rate = %.2f]\n",
+              FLAGS$learning_rate, FLAGS$lr_anneal_step, FLAGS$lr_decay_rate))
   train_error <- mean(errors$train)
   test_error <- mean(errors$test)
   cat(sprintf("Mean train/test errors: %.4f / %.4f, train optimizer: %s\n", train_error, test_error, train_op$name))
