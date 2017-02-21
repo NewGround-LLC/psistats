@@ -1,0 +1,72 @@
+===================================
+
+k = 256, [1024,512,512], lr = 10e-4
+————
+Training Data Eval:
+Prediction accuracies:
+   gender : 91.57%
+      age : 94.82%
+political : 69.62%
+      ope : 55.91%
+      con : 45.55%
+      ext : 51.97%
+      agr : 47.79%
+      neu : 53.95%
+------------------
+     Mean : 63.90%
+      Std : 19.48%
+Evaluation MSE: 1.05, MAE: 0.71
+Test Data Eval:
+Prediction accuracies:
+   gender : 93.57%
+      age : 81.12%
+political : 67.05%
+      ope : 48.72%
+      con : 29.32%
+      ext : 30.48%
+      agr : 26.21%
+      neu : 29.82%
+------------------
+     Mean : 50.79%
+      Std : 26.55%
+Evaluation MSE: 2.39, MAE: 0.86
+Step 50000: train loss = 1.02, test loss = 2.27 (duration: 0.074599027633667)
+Dropout probability = 0.50, input_features = 256, layers = [1024,512,512]
+Learning rate initial: 0.0001, [annealing step = 10000, decay rate = 0.96]
+Mean train/test errors: 1.8847 / 2.7239, train optimizer: train/Adam
+===================================
+
+k = 512, [1024,512,512], lr = 10e-4
+————
+Training Data Eval:
+Prediction accuracies:
+   gender : 91.44%
+      age : 96.20%
+political : 72.99%
+      ope : 67.55%
+      con : 58.56%
+      ext : 64.58%
+      agr : 62.71%
+      neu : 66.95%
+------------------
+     Mean : 72.62%
+      Std : 13.78%
+Evaluation MSE: 0.81, MAE: 0.63
+Test Data Eval:
+Prediction accuracies:
+   gender : 93.58%
+      age : 81.26%
+political : 67.05%
+      ope : 47.11%
+      con : 27.35%
+      ext : 27.66%
+      agr : 20.64%
+      neu : 28.75%
+------------------
+     Mean : 49.17%
+      Std : 28.02%
+Evaluation MSE: 2.36, MAE: 0.85
+Step 50000: train loss = 0.80, test loss = 1.79 (duration: 0.0914011001586914)
+Dropout probability = 0.50, input_features = 512, layers = [1024,512,512]
+Learning rate initial: 0.0001, [annealing step = 10000, decay rate = 0.96]
+Mean train/test errors: 1.5662 / 2.6560, train optimizer: train/Adam
