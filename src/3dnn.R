@@ -37,7 +37,7 @@ inference <- function(features, layers, keep_prob) {
   features_dimension <- features$get_shape()$as_list()[2]
   hidden1 <- tf$contrib$layers$fully_connected(inputs = features, 
                                                num_outputs = layers[1], 
-                                               activation_fn = tf$nn$softsign,
+                                               activation_fn = tf$nn$softsign, #tf$nn$relu, #
                                                weights_initializer = tf$contrib$layers$xavier_initializer(),
                                                weights_regularizer = tf$contrib$layers$l2_regularizer(0.0001),
                                                biases_initializer = tf$contrib$layers$xavier_initializer())
@@ -51,7 +51,7 @@ inference <- function(features, layers, keep_prob) {
   # Hidden 2
   hidden2 <- tf$contrib$layers$fully_connected(inputs = dropped1, 
                                                num_outputs = layers[2], 
-                                               activation_fn = tf$nn$softsign,
+                                               activation_fn = tf$nn$softsign, #tf$nn$relu, #
                                                weights_initializer = tf$contrib$layers$xavier_initializer(),
                                                weights_regularizer = tf$contrib$layers$l2_regularizer(0.0001),
                                                biases_initializer = tf$contrib$layers$xavier_initializer())
@@ -62,7 +62,7 @@ inference <- function(features, layers, keep_prob) {
   # Hidden 3
   hidden3 <- tf$contrib$layers$fully_connected(inputs = dropped2, 
                                                num_outputs = layers[3], 
-                                               activation_fn = tf$nn$softsign,
+                                               activation_fn = tf$nn$softsign, # tf$nn$relu, #
                                                weights_initializer = tf$contrib$layers$xavier_initializer(),
                                                weights_regularizer = tf$contrib$layers$l2_regularizer(0.0001),
                                                biases_initializer = tf$contrib$layers$xavier_initializer())
