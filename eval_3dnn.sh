@@ -10,5 +10,5 @@
                                           --dropout 0.5 \
                                           --lr_anneal_step 10000 \
                                           --lr_decay_rate 0.96 \
-                                          --network_type dnn \
+                                          --network_type 3dnn \
                                           --data_features_file $1
