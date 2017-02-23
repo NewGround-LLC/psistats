@@ -299,8 +299,8 @@ with(tf$Graph()$as_default(), {
   }
   
   # Final details about method
-  cat(sprintf("Dropout probability = %.2f, input_features = %d, layers = [%s], network type: %s\n",
-              FLAGS$dropout, data_sets$features_dimension, FLAGS$layers, FLAGS$network_type))
+  cat(sprintf("Dropout probability = %.2f, input_features = %d, layers = [%s], network type: %s\, batch size: %dn",
+              FLAGS$dropout, data_sets$features_dimension, FLAGS$layers, FLAGS$network_type, FLAGS$batch_size))
   cat(sprintf("Learning rate initial: %g, [annealing step = %d, decay rate = %.2f]\n",
               FLAGS$learning_rate, FLAGS$lr_anneal_step, FLAGS$lr_decay_rate))
   train_error <- mean(errors$train)
