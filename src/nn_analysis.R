@@ -39,6 +39,10 @@ parser <- OptionParser(usage = "%prog [options] file", option_list = option_list
 args <- parse_args(parser, positional_arguments = TRUE)
 FLAGS <- args$options
 
+# Log options
+print("Start arguments:")
+print(FLAGS)
+
 # load script with appropriate network type
 s_file <- sprintf("src/%s.R", FLAGS$network_type)
 source(s_file)
