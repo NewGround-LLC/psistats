@@ -43,6 +43,7 @@ inference <- function(features, layers, keep_prob) {
                                                biases_initializer = tf$contrib$layers$xavier_initializer())
   tf$contrib$layers$summarize_activation(hidden1)
   # Apply dropout to avoid model overfitting on training data
+  keep_prob <- 0.75
   dropped1 <- dropout(hidden1, keep_prob, "dropout_hidden1")
   
   # The linear regression layer
@@ -57,7 +58,7 @@ inference <- function(features, layers, keep_prob) {
                                                biases_initializer = tf$contrib$layers$xavier_initializer())
   tf$contrib$layers$summarize_activation(hidden2)
   # Apply dropout to avoid model overfitting on training data
-  dropped2 <- dropout(hidden2, keep_prob, "dropout_hidden2")
+  dropped2 <- hidden2# dropout(hidden2, keep_prob, "dropout_hidden2")
   
   # Hidden 3
   hidden3 <- tf$contrib$layers$fully_connected(inputs = dropped2, 
@@ -68,6 +69,7 @@ inference <- function(features, layers, keep_prob) {
                                                biases_initializer = tf$contrib$layers$xavier_initializer())
   tf$contrib$layers$summarize_activation(hidden2)
   # Apply dropout to avoid model overfitting on training data
+  keep_prob <- 0.5
   dropped3 <- dropout(hidden3, keep_prob, "dropout_hidden3")
   
   # Return linear regression output layer

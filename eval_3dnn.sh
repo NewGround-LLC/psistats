@@ -5,7 +5,7 @@
 
 ~/anaconda3/bin/Rscript src/nn_analysis.R --learning_rate 0.0001 \
                                           --max_steps 50000 \
-                                          --layers 1024,512,512 \
+                                          --layers 340,200,200 \
                                           --batch_size 10 \
                                           --dropout 0.5 \
                                           --lr_anneal_step 10000 \

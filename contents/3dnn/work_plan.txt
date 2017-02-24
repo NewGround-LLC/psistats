@@ -142,3 +142,76 @@ Step 50000: train loss = 1.23, test loss = 2.06 (duration: 0.118681192398071)
 Dropout probability = 0.50, input_features = 512, layers = [1024,512,512], network type: 3dnn
 Learning rate initial: 0.0001, [annealing step = 10000, decay rate = 0.96]
 Mean train/test errors: 2.6614 / 2.9175, train optimizer: train/Adam
+
+===================================
+
+k = 128, [256,256,256], lr = 10e-4, relu, L1 weights normalizer, batch size: 10, two dropouts
+————
+Training Data Eval:
+Prediction accuracies:
+   gender : 78.68%
+      age : 82.48%
+political : 61.90%
+      ope : 33.44%
+      con : 20.74%
+      ext : 21.71%
+      agr : 13.65%
+      neu : 24.13%
+------------------
+     Mean : 42.09%
+      Std : 27.88%
+Evaluation MSE: 2.46, MAE: 0.93
+Test Data Eval:
+Prediction accuracies:
+   gender : 80.09%
+      age : 74.47%
+political : 61.01%
+      ope : 33.94%
+      con : 18.96%
+      ext : 20.46%
+      agr : 7.34%
+      neu : 24.18%
+------------------
+     Mean : 40.06%
+      Std : 27.81%
+Evaluation MSE: 3.18, MAE: 0.99
+Step 50000: train loss = 1.43, test loss = 2.26 (duration: 0.0198140144348145)
+Dropout probability = 0.50, input_features = 128, layers = [256,256,256], network type: 3dnn, batch size: 10
+Learning rate initial: 0.0001, [annealing step = 10000, decay rate = 0.96]
+Mean train/test errors: 3.6666 / 3.8659, train optimizer: train/Adam
+===================================
+
+k = 256, [340,200,200], lr = 10e-4, relu, L1 weights normalizer, batch size: 10, two dropouts
+————
+Training Data Eval:
+Prediction accuracies:
+   gender : 73.82%
+      age : 86.25%
+political : 60.27%
+      ope : 28.28%
+      con : 17.72%
+      ext : 18.73%
+      agr : 10.23%
+      neu : 21.44%
+------------------
+     Mean : 39.59%
+      Std : 29.30%
+Evaluation MSE: 2.15, MAE: 0.92
+Test Data Eval:
+Prediction accuracies:
+   gender : 76.60%
+      age : 74.87%
+political : 57.45%
+      ope : 27.96%
+      con : 17.67%
+      ext : 13.62%
+      agr : 11.98%
+      neu : 22.84%
+------------------
+     Mean : 37.87%
+      Std : 27.37%
+Evaluation MSE: 3.20, MAE: 0.99
+Step 50000: train loss = 1.90, test loss = 2.18 (duration: 0.0235841274261475)
+Dropout probability = 0.50, input_features = 256, layers = [340,200,200], network type: 3dnn, batch size: 10
+Learning rate initial: 0.0001, [annealing step = 10000, decay rate = 0.96]
+Mean train/test errors: 3.5166 / 4.1639, train optimizer: train/Adam
