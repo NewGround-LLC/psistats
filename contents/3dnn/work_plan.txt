@@ -292,6 +292,34 @@ Mean train/test errors: 4.3932 / 2.8451, train optimizer: train/Adam
 
 k = 1024, [2048,1024,1024], lr = 10e-4, relu, L1 weights normalizer
 ————
-
+Training Data Eval:
+Prediction accuracies:
+   gender : 87.34%
+      age : 95.18%
+political : 67.56%
+      ope : 50.05%
+      con : 40.24%
+      ext : 46.94%
+      agr : 40.53%
+      neu : 50.76%
+------------------
+     Mean : 59.83%
+      Std : 21.27%
+Evaluation MSE: 1.03, MAE: 0.72
+Test Data Eval:
+Prediction accuracies:
+   gender : 93.42%
+      age : 82.33%
+political : 68.36%
+      ope : 46.45%
+      con : 22.57%
+      ext : 29.58%
+      agr : 25.93%
+      neu : 27.56%
+------------------
+     Mean : 49.53%
+      Std : 28.11%
+Evaluation MSE: 2.58, MAE: 0.87
+Step 11000: train loss = 0.98, test loss = 2.05 (duration: 0.434525012969971) <-!!!!! Not finished yet
 
 
