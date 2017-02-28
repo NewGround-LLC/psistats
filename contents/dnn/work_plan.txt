@@ -141,6 +141,42 @@ Evaluation MSE: 2.34, MAE: 0.86
 Step 50000: train loss = 1.23, test loss = 1.93 (duration: 0.0508708953857422)
 Learning rate start: 0.0001, dropout = 0.50, input_features = 512, layers = [512,256]
 Mean train/test errors: 2.4148 / 2.7665, train optimizer: train/Adam
+===================================
+
+k = 512, [1024,512], lr = 10e-4
+————
+Training Data Eval:
+Prediction accuracies:
+   gender : 91.42%
+      age : 96.35%
+political : 72.76%
+      ope : 67.32%
+      con : 58.38%
+      ext : 65.72%
+      agr : 62.25%
+      neu : 67.17%
+------------------
+     Mean : 72.67%
+      Std : 13.80%
+Evaluation MSE: 0.80, MAE: 0.63
+Test Data Eval:
+Prediction accuracies:
+   gender : 93.61%
+      age : 81.45%
+political : 67.26%
+      ope : 46.39%
+      con : 27.74%
+      ext : 28.16%
+      agr : 21.65%
+      neu : 28.50%
+------------------
+     Mean : 49.34%
+      Std : 27.87%
+Evaluation MSE: 2.34, MAE: 0.85
+Step 50000: train loss = 0.78, test loss = 1.80 (duration: 0.104606866836548)
+Dropout probability = 0.50, input_features = 512, layers = [1024,512], network type: dnn, batch size: 100
+Learning rate initial: 0.0001, [annealing step = 10000, decay rate = 0.96]
+Mean train/test errors: 1.5634 / 2.6367, train optimizer: train/Adam
 
 ++++++++++++++++++++++++++++++++++++++++++
 k = 1024
