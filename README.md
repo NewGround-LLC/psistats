@@ -12,13 +12,13 @@ In order to get access from R environment to `TensorFlow` framework its necessar
 
 
 The R source code has multiple dependencies on third party R packages:
-* irlba - the package to perform singular value decomposition analysis
-* optparse - the package providing support for command line arguments parsing
-* Matrix - the package for handling sparse matrix structures
-* mice - the package to perform multivariate imputation of missing values
-* R6 - the package allowing to define `R6Class` class objects in R
-* ROCR - the package for visualizing the performance of scoring classifiers
-* tensorflow - the package exposing `TensorFlow` Python API in `R` environment
+* [irlba](https://www.rdocumentation.org/packages/irlba/versions/2.1.2/topics/irlba) - the package to perform singular value decomposition analysis
+* [optparse](https://www.rdocumentation.org/packages/optparse/versions/1.3.2) - the package providing support for command line arguments parsing
+* [Matrix](https://www.rdocumentation.org/packages/Matrix/versions/1.2-8) - the package for handling sparse matrix structures
+* [mice](https://www.rdocumentation.org/packages/mice/versions/2.30) - the package to perform multivariate imputation of missing values
+* [R6](https://www.rdocumentation.org/packages/R6/versions/2.2.0) - the package allowing to define `R6Class` classes with references semantics
+* [ROCR](https://www.rdocumentation.org/packages/ROCR/versions/1.0-7) - the package for visualizing the performance of scoring classifiers
+* [tensorflow](https://www.rdocumentation.org/packages/tensorflow/versions/0.6.0) - the package exposing `TensorFlow` Python API in `R` environment
 
 In order to install necessary R packages run the following command in R environment:
 ```
