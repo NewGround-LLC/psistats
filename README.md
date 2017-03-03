@@ -1,4 +1,4 @@
-This repository contains the source code accompanying research paper ["Applying Deep Machine Learning for psycho-demographic profiling of Internet users using O.C.E.A.N. model of personality"][]. 
+This repository contains the source code accompanying research paper ["Applying Deep Machine Learning for psycho-demographic profiling of Internet users using O.C.E.A.N. model of personality"][5]. 
 
 # Setting up working environment
 
@@ -36,21 +36,37 @@ The data corpus comprise of following files:
 3. _users-likes.csv:_ contains the associations between users and their Likes, stored as user–Like pairs. It has 10 612 326 rows and two columns: user ID and Like ID. An existence of a user–Like pair implies that a given user had the corresponding Like on their profile.
 
 
-# Source code
+# Source code structure
 
 The source code consist of `R` scripts, each encapsulating particular functionality:
 
-* config.R - holds common configuration parameters (input, intermediate and output directories, etc)
-* preprocessing.R - performs raw data corpus preprocessing by creating sparse data matrix, trimming it, and missing data point imputation
-* analysis.R - encapsulates routines to perform preliminary analysis of data corpus to find correlations between input variables and outputs (heat map) as well as to find optimal number of SVD dimensions (plot number of SVD dimensions against prediction accuracies of regression models per dependent variable)
-* svd_varimax.R - performs input features' dimensionality reduction using SVD with subsequent varimax rotation in order to simplify SVD dimensions
-* users_likes_data_set.R - holds data set definition with functions to get batches of train/validation samples
-* utils.R - provides common utilitites
-* regression_analysis.R - encapsulate experiment with linear/logistic regression predictive models 
-* nn_analysis.R - encapsulate experiment with predictive models based on artificial neural networks
-* mlp.R - encapsulates shallow neural network graph creation
-* dnn.R, 3dnn.R - encapsulates deep neural networks graph creation with two and three hidden layers accordingly
+* [config.R][src/config.R] - holds common configuration parameters (input, intermediate and output directories, etc)
+* [preprocessing.R][src/preprocessing.R] - performs raw data corpus preprocessing by creating sparse data matrix, trimming it, and missing data point imputation
+* [analysis.R][src/analysis.R] - encapsulates routines to perform preliminary analysis of data corpus to find correlations between input variables and outputs (heat map) as well as to find optimal number of SVD dimensions (plot number of SVD dimensions against prediction accuracies of regression models per dependent variable)
+* [svd_varimax.R][src/svd_varimax.R] - performs input features' dimensionality reduction using SVD with subsequent varimax rotation in order to simplify SVD dimensions
+* [users_likes_data_set.R][src/users_likes_data_set.R] - holds data set definition with functions to get batches of train/validation samples
+* [utils.R][src/utils.R] - provides common utilitites
+* [regression_analysis.R][src/regression_analysis.R] - encapsulate experiment with linear/logistic regression predictive models 
+* [nn_analysis.R][src/nn_analysis.R] - encapsulate experiment with predictive models based on artificial neural networks
+* [mlp.R][src/mlp.R] - encapsulates shallow neural network graph creation
+* [dnn.R][src/dnn.R], [3dnn.R][src/3dnn.R] - encapsulates deep neural networks (DNN) graph creation with two and three hidden layers accordingly
 
+Additionality shell scripts provided in order to help with R scripts execution:
+
+* [eval_mlp_1.sh][./eval_mlp_1.sh] - to evaluate shallow neural network
+* [eval_dnn.sh][./eval_dnn.sh] - to evaluate DNN with two hidden layers 
+* [eval_3dnn.sh][./eval_3dnn.sh] - to evaluate DNN with three hidden layers 
+
+
+# Running experiments
+
+The detailed instructions how to run experiments present in our research paper. Here we  depict only major steps to be done:
+
+1. The trimmed sparse matrix with users-likes relations must be created using [preprocessing.R][src/preprocessing.R] script.
+2. The optimal number of SVD dimensions to be applied to the created users-likes matrix should be found by executing [analysis.R][src/analysis.R] script.
+3. With found optimal number of SVD dimensions the dimensionality reduction should be performed using [svd_varimax.R][src/svd_varimax.R] script.
+4. The linear/logistic regression analysis can be performed with .[regression_analysis.R][src/regression_analysis.R] script using as input the users-likes matrix with reduced features dimensions prepared in previous step.
+5. The experiments with predictive models based on neural networks can be executed by running corresponding shell scripts mentioned above.
 
 [1]:https://www.tensorflow.org/install/
 [2]:https://cran.r-project.org/manuals.html
