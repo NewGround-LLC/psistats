@@ -72,6 +72,10 @@ The detailed instructions how to run experiments present in our research paper. 
 
 This source code maintained and managed by Iaroslav Omelianenko (NewGround LLC)
 
+## Copyright
+
+Copyright (c) 2017 NewGround LLC
+
 [1]:https://www.tensorflow.org/install/
 [2]:https://cran.r-project.org/manuals.html
 [3]:https://rstudio.github.io/tensorflow/
