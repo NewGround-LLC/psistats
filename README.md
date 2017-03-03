@@ -1,8 +1,8 @@
 This repository contains the source code accompanying research paper ["Applying Deep Machine Learning for psycho-demographic profiling of Internet users using O.C.E.A.N. model of personality"][5]. 
 
-# Setting up working environment
+## Setting up working environment
 
-## Dependencies
+### Dependencies
 The source code in this repository is  written in `R` programming language and use `TensorFlow` framework to accelerate graph computations performed by studied machine learning models. For better performance, it's recommended to install `TensorFlow` with GPU support.
 
 The installation instructions for `TensorFlow` library may be found at [this page][1].
@@ -26,7 +26,7 @@ In order to install necessary R packages run the following command in R environm
 ```
 The `tensorflow` bridge package should be installed as described at [this manual][3]
 
-## Data Corpus
+### Data Corpus
 The data corpus used in the research is publicly available and can be requested at [dataminingtutorial.com][4] 
 
 The data corpus comprise of following files:
@@ -36,7 +36,7 @@ The data corpus comprise of following files:
 3. _users-likes.csv:_ contains the associations between users and their Likes, stored as user–Like pairs. It has 10 612 326 rows and two columns: user ID and Like ID. An existence of a user–Like pair implies that a given user had the corresponding Like on their profile.
 
 
-# Source code structure
+## Source code structure
 
 The source code consist of `R` scripts, each encapsulating particular functionality:
 
@@ -58,7 +58,7 @@ Additionality shell scripts provided in order to help with R scripts execution:
 * [eval_3dnn.sh](./eval_3dnn.sh) - to evaluate DNN with three hidden layers 
 
 
-# Running experiments
+## Running experiments
 
 The detailed instructions how to run experiments present in our research paper. Here we  depict only major steps to be done:
 
