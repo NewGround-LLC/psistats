@@ -6,7 +6,7 @@ This repository contains the source code accompanying research paper ["Applying 
 The source code in this repository is  written in `R` programming language and use `TensorFlow` framework to accelerate graph computations performed by studied machine learning models. For better performance, it's recommended to install `TensorFlow` with GPU support.
 
 The installation instructions for `TensorFlow` library may be found at [this page][1].
-The installation instructions for `R` programming language environment described in section _R Installation and Administration_ of R manuals at [web page][2].
+The installation instructions for `R` programming language environment described in section _'R Installation and Administration'_ of manuals at [web page][2].
 
 In order to get access from R environment to `TensorFlow` framework its necessary to install `TensorFlow for R` package as described at [this page][3]
 
@@ -67,6 +67,10 @@ The detailed instructions how to run experiments present in our research paper. 
 3. With found optimal number of SVD dimensions the dimensionality reduction should be performed using [svd_varimax.R](src/svd_varimax.R) script.
 4. The linear/logistic regression analysis can be performed with [regression_analysis.R](src/regression_analysis.R) script using as input the users-likes matrix with reduced features dimensions prepared in previous step.
 5. The experiments with predictive models based on neural networks can be executed by running corresponding shell scripts mentioned above.
+
+## Authors
+
+This source code maintained and managed by Iaroslav Omelianenko (NewGround LLC)
 
 [1]:https://www.tensorflow.org/install/
 [2]:https://cran.r-project.org/manuals.html
