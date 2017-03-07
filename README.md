@@ -80,4 +80,4 @@ Copyright (c) 2017 NewGround LLC
 [2]:https://cran.r-project.org/manuals.html
 [3]:https://rstudio.github.io/tensorflow/
 [4]:http://dataminingtutorial.com
-[5]:http://arxiv.org
+[5]:https://hal.archives-ouvertes.fr/hal-01482770
