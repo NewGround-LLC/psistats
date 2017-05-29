@@ -1,4 +1,4 @@
-This repository contains the source code accompanying research paper ["Applying Deep Machine Learning for psycho-demographic profiling of Internet users using O.C.E.A.N. model of personality"][5]. 
+This repository contains the source code accompanying research paper ["Applying Deep Machine Learning for psycho-demographic profiling of Internet users using O.C.E.A.N. model of personality"][5] and [arXiv preprint arXiv:1703.06914][6]. 
 
 ## Setting up working environment
 
@@ -81,3 +81,4 @@ Copyright (c) 2017 NewGround LLC
 [3]:https://rstudio.github.io/tensorflow/
 [4]:http://dataminingtutorial.com
 [5]:https://hal.archives-ouvertes.fr/hal-01482770
+[6]:https://arxiv.org/abs/1703.06914
